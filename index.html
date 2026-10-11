@@ -24,6 +24,22 @@
     @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:35px}.hero-copy{text-align:center}.hero-copy>p{margin-left:auto;margin-right:auto}.hero-actions,.trust-line{justify-content:center}.hero-visual{width:min(560px,100%);margin:auto}.dashboard{transform:none}.float-note{right:-5px}.about-panel{grid-template-columns:1fr;gap:35px}.about-art{min-height:260px}.contact-grid{grid-template-columns:1fr;gap:30px}.cta{padding:38px;align-items:flex-start;flex-direction:column}.section{padding:78px 0}}
     @media(max-width:700px){.container{width:min(100% - 30px,1140px)}.nav{height:68px}.brand{flex:0 1 155px;min-width:0}.brand img{width:155px;max-width:155px;max-height:42px}.nav-links{display:none;position:absolute;left:15px;right:15px;top:68px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 40px rgba(6,78,59,.12);flex-direction:column;align-items:stretch;gap:0}.nav-links.open{display:flex}.nav-links a{padding:12px 10px;border-radius:8px}.nav-links a:hover{background:#f1faf5}.nav-actions{gap:8px;flex:0 0 auto}.nav-actions>.btn{padding:10px 11px;font-size:.76rem;gap:5px;white-space:nowrap}.menu-toggle{display:inline-grid;place-items:center;flex:0 0 42px;width:42px;height:42px}.nav{gap:10px}.hero{padding:58px 0 68px}h1{font-size:clamp(2.5rem,11vw,3.5rem)}.hero-copy>p{font-size:1rem}.hero-actions .btn{flex:1;min-width:145px}.dash-body{padding:15px}.dash-total{font-size:1.7rem}.float-note{position:relative;right:auto;bottom:auto;margin:14px auto 0;width:max-content;max-width:100%}.feature-grid,.steps-grid{grid-template-columns:1fr}.feature{padding:23px}.section-head{margin-bottom:32px}.section{padding:65px 0}.about-art{min-height:230px}.cta-wrap{padding-bottom:65px}.cta{padding:29px 24px}.form-card{padding:20px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.footer-top,.footer-bottom{align-items:flex-start;flex-direction:column}.footer-links{flex-wrap:wrap;gap:16px}.footer-brand{flex-wrap:wrap}.footer-brand span{width:100%}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+    /* Animated 3D-style typing assistant illustration */
+    .typing-scene{position:absolute;z-index:3;left:-34px;bottom:18px;width:clamp(150px,34%,235px);filter:drop-shadow(0 18px 22px rgba(6,78,59,.18));pointer-events:none;animation:sceneFloat 4s ease-in-out infinite}
+    .typing-scene svg{display:block;width:100%;height:auto;overflow:visible}
+    .typing-scene .arm-left{transform-origin:104px 151px;animation:typeLeft .42s ease-in-out infinite alternate}
+    .typing-scene .arm-right{transform-origin:147px 151px;animation:typeRight .36s ease-in-out infinite alternate}
+    .typing-scene .finger{animation:keyTap .36s ease-in-out infinite alternate}
+    .typing-scene .screen-glow{animation:screenPulse 2.6s ease-in-out infinite}
+    @keyframes sceneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+    @keyframes typeLeft{from{transform:rotate(-3deg)}to{transform:rotate(5deg) translateY(-2px)}}
+    @keyframes typeRight{from{transform:rotate(4deg) translateY(-1px)}to{transform:rotate(-4deg) translateY(2px)}}
+    @keyframes keyTap{from{transform:translateY(0)}to{transform:translateY(2px)}}
+    @keyframes screenPulse{0%,100%{opacity:.65}50%{opacity:1}}
+    @media(max-width:700px){.typing-scene{left:-8px;bottom:4px;width:clamp(118px,32%,165px)}}
+    @media(prefers-reduced-motion:reduce){.typing-scene,.typing-scene *{animation:none!important}}
+
   </style>
 </head>
 <body>
@@ -47,6 +63,38 @@
         <div class="trust-line"><span class="trust-check">✓</span> A clearer view of customer dues and follow-ups</div>
       </div>
       <div class="hero-visual" aria-label="Illustrative receivables dashboard">
+
+        <div class="typing-scene" role="img" aria-label="Animated 3D-style person typing on a laptop">
+          <svg viewBox="0 0 220 210" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="chairGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#27b98b"/><stop offset="1" stop-color="#075440"/></linearGradient>
+              <linearGradient id="shirtGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#168565"/><stop offset="1" stop-color="#064e3b"/></linearGradient>
+              <linearGradient id="skinGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7cda5"/><stop offset="1" stop-color="#d99468"/></linearGradient>
+              <linearGradient id="laptopGrad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#344d46"/><stop offset="1" stop-color="#142a25"/></linearGradient>
+            </defs>
+            <ellipse cx="117" cy="190" rx="78" ry="10" fill="#0b4938" opacity=".12"/>
+            <path d="M62 101Q42 92 40 121L42 160Q44 174 59 173L77 171" fill="none" stroke="#9bb6aa" stroke-width="13" stroke-linecap="round"/>
+            <path d="M57 99Q45 84 55 69Q64 56 80 64L103 78" fill="none" stroke="#b4cfc2" stroke-width="8" stroke-linecap="round"/>
+            <path d="M74 86Q73 63 91 61Q120 59 135 83L149 128L89 143L67 115Z" fill="url(#chairGrad)"/>
+            <path d="M86 78Q105 68 123 84L137 115L111 135L79 115Z" fill="url(#shirtGrad)"/>
+            <path d="M90 49Q83 35 91 22Q100 8 118 15Q133 21 131 39L125 57L102 61Z" fill="url(#skinGrad)"/>
+            <path d="M88 35Q83 15 102 9Q122 4 133 20L132 34L124 26Q108 33 94 28Z" fill="#172d28"/>
+            <path d="M97 42Q107 49 119 40" fill="none" stroke="#a96545" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="111" cy="35" r="1.8" fill="#273b32"/>
+            <path d="M102 58L103 69L117 70L122 57" fill="url(#skinGrad)"/>
+            <path d="M83 84Q72 100 83 116L100 132" fill="none" stroke="#0b654c" stroke-width="13" stroke-linecap="round"/>
+            <path d="M125 86Q144 95 146 117L136 132" fill="none" stroke="#0b654c" stroke-width="13" stroke-linecap="round"/>
+            <g class="arm-left"><path d="M87 96Q97 108 107 133" fill="none" stroke="url(#skinGrad)" stroke-width="10" stroke-linecap="round"/><path d="M107 133L119 142" fill="none" stroke="url(#skinGrad)" stroke-width="8" stroke-linecap="round"/></g>
+            <g class="arm-right"><path d="M131 97Q145 113 137 134" fill="none" stroke="url(#skinGrad)" stroke-width="10" stroke-linecap="round"/><path d="M137 134L128 142" fill="none" stroke="url(#skinGrad)" stroke-width="8" stroke-linecap="round"/></g>
+            <path d="M72 137L169 137L187 175Q188 179 182 180H62Q57 178 61 174Z" fill="url(#laptopGrad)"/>
+            <path d="M79 142H163L176 171H68Z" fill="#e0f6ed"/>
+            <g class="screen-glow" fill="#20c997"><rect x="84" y="148" width="44" height="3" rx="1.5"/><rect x="84" y="155" width="61" height="3" rx="1.5" opacity=".7"/><rect x="84" y="162" width="35" height="3" rx="1.5" opacity=".45"/></g>
+            <path d="M59 178Q110 185 187 178L181 185H66Z" fill="#71877f"/>
+            <g fill="#d6e7df" class="finger"><rect x="103" y="143" width="5" height="2" rx="1"/><rect x="111" y="145" width="5" height="2" rx="1"/><rect x="120" y="143" width="5" height="2" rx="1"/><rect x="129" y="145" width="5" height="2" rx="1"/></g>
+            <circle cx="173" cy="38" r="15" fill="#d8f8eb"/><path d="M167 38l4 4 8-9" fill="none" stroke="#087653" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="48" cy="48" r="4" fill="#20c997" opacity=".8"/><circle cx="177" cy="78" r="3" fill="#d8b66a"/>
+          </svg>
+        </div>
         <div class="glow"></div><div class="dashboard">
           <div class="dash-top"><div class="dash-brand">Receivables overview</div><div class="dash-dots"><i></i><i></i><i></i></div></div>
           <div class="dash-body">
