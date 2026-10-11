@@ -40,6 +40,25 @@
     @media(max-width:700px){.typing-scene{left:-8px;bottom:4px;width:clamp(118px,32%,165px)}}
     @media(prefers-reduced-motion:reduce){.typing-scene,.typing-scene *{animation:none!important}}
 
+
+    /* Ambient multi-ring bubble background */
+    .bubble-background{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;isolation:isolate}
+    .bubble-background .bubble{position:absolute;display:block;border:1px solid rgba(32,201,151,.22);border-radius:50%;background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.8),rgba(32,201,151,.07) 44%,rgba(6,78,59,.015) 72%);box-shadow:inset 0 0 22px rgba(32,201,151,.06),0 0 24px rgba(32,201,151,.035);animation:bubbleDrift var(--duration,18s) ease-in-out infinite alternate;will-change:transform}
+    .bubble-background .bubble:before,.bubble-background .bubble:after{content:"";position:absolute;border:1px solid rgba(32,201,151,.15);border-radius:50%;inset:12%}
+    .bubble-background .bubble:after{inset:25%;border-color:rgba(255,255,255,.7)}
+    .bubble-background .b1{width:clamp(70px,10vw,140px);height:clamp(70px,10vw,140px);left:3%;top:13%;--duration:21s}
+    .bubble-background .b2{width:clamp(38px,5vw,76px);height:clamp(38px,5vw,76px);left:42%;top:7%;--duration:16s;animation-delay:-6s}
+    .bubble-background .b3{width:clamp(100px,16vw,220px);height:clamp(100px,16vw,220px);right:-3%;top:22%;--duration:25s;animation-delay:-11s}
+    .bubble-background .b4{width:clamp(48px,7vw,96px);height:clamp(48px,7vw,96px);right:35%;bottom:9%;--duration:19s;animation-delay:-4s}
+    .bubble-background .b5{width:clamp(64px,9vw,120px);height:clamp(64px,9vw,120px);left:17%;bottom:3%;--duration:23s;animation-delay:-8s}
+    .bubble-background .b6{width:clamp(28px,4vw,58px);height:clamp(28px,4vw,58px);right:12%;bottom:12%;--duration:14s;animation-delay:-2s}
+    .bubble-background .b7{width:clamp(35px,5vw,70px);height:clamp(35px,5vw,70px);left:67%;top:48%;--duration:20s;animation-delay:-13s}
+    .hero{isolation:isolate}
+    .hero>.container{position:relative;z-index:1}
+    .hero>.bubble-background{z-index:-1}
+    @keyframes bubbleDrift{0%{transform:translate3d(0,0,0) scale(.96)}50%{transform:translate3d(12px,-22px,0) scale(1.035)}100%{transform:translate3d(-9px,14px,0) scale(1)}}
+    @media(prefers-reduced-motion:reduce){.bubble-background .bubble{animation:none!important}}
+
   </style>
 </head>
 <body>
@@ -54,6 +73,8 @@
 </header>
 <main>
   <section class="hero" id="home">
+  <div class="bubble-background" aria-hidden="true"><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span><span class="bubble b4"></span><span class="bubble b5"></span><span class="bubble b6"></span><span class="bubble b7"></span></div>
+
     <div class="container hero-grid">
       <div class="hero-copy">
         <span class="eyebrow">Business receivables management</span>
