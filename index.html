@@ -381,7 +381,7 @@ sb.auth.onAuthStateChange((event,session)=>{
  else if(event==='SIGNED_OUT'){currentUser=null;authReadyUserId=null;showLogin()}
 });
 setInterval(checkAccountStatus,60000);
-function today(){return new Date().toISOString().slice(0,10)}
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function fy(d){let x=new Date(d+'T12:00:00'),y=x.getFullYear();return x.getMonth()>=3?y+'-'+String(y+1).slice(-2):(y-1)+'-'+String(y).slice(-2)}
 const INITIAL_FY='2026-27';
 function createdFinancialYears(){let saved=[];try{saved=JSON.parse(localStorage.getItem('billing_created_fys')||'[]')}catch(_){}if(!Array.isArray(saved)||!saved.length)saved=[INITIAL_FY];if(!saved.includes(INITIAL_FY))saved.push(INITIAL_FY);return [...new Set(saved.filter(x=>/^\\d{4}-\\d{2}$/.test(x)))].sort((a,b)=>Number(b.slice(0,4))-Number(a.slice(0,4)))}
