@@ -448,6 +448,7 @@ const baseOpenBill=openBill;
 function openBill(id){
  baseOpenBill(id);
  const b=bills.find(x=>x.id===id);if(!b)return;
+ if($('settingsFY'))$('settingsFY').value=activeFY;
  const subtotal=(b.items||[]).reduce((a,x)=>a+(Number(x.qty)||0)*(Number(x.rate)||0),0);
  let percent=Number(b.discountPercent);
  if(!Number.isFinite(percent))percent=subtotal>0?((Number(b.discount)||0)/subtotal*100):0;
