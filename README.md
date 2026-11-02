@@ -1,23 +1,26 @@
-# RECOUNTIX — Beyond What's Due
+# Computer Shop Billing CRM
 
-A responsive, single-page marketing website for Recountix, a business receivables management product.
+A super-lightweight, single-page non-GST billing app for a computer shop. It runs directly in a browser using plain HTML, CSS, and JavaScript.
 
-## Files
-- `index.html` — complete responsive marketing site with navigation, feature overview, how-it-works section, about section, FAQs, and demo request form.
-- `auth.js` — separate Firebase Authentication starter from the setup process. It is **not connected to the marketing page** and must not be considered production login until Firebase is configured and the authentication flow is integrated into the actual app.
-- `README.md` — setup notes.
+## Features
+- Non-GST Estimate / Cash Memo
+- Manually typed item descriptions, quantity, rate, serial number, and warranty note
+- No stock/inventory management or cash drawer/day-end closing
+- Invoice history with April–March financial-year filter, date range, and customer/mobile search
+- A5 printable bill with serial/warranty details and Terms & Conditions
+- Browser-local storage and JSON backup/restore
 
-## Run locally
-Open the folder in VS Code and use a static server such as Live Server. Since the marketing page is a standalone HTML file, no build step is required.
+## Run
+Open `index.html` in Chrome, Edge, or Firefox. No installation, server, or build step required.
 
-## Deploy
-For GitHub Pages: repository **Settings → Pages**, choose branch `main` and folder `/ (root)`, then save. Wait for GitHub Pages to publish and open the URL it shows.
+## Setup
+1. Open the app and select **Shop Settings**.
+2. Enter shop name, phone, address, invoice prefix, and default terms.
+3. Create a bill and use **Save bill**.
+4. Select **Print A5 / Save PDF**. Choose A5 paper in the print dialog.
 
-## Demo request form
-The form validates the inputs and opens the visitor's default email application with a prepared message to `support.recountix@gmail.com`. It does not submit directly to a server or save data on this website.
+## Backup note
+Bills are stored in localStorage in the current browser/device. Clearing browser data can remove them. Use **Invoice History → Export JSON backup** regularly. The app has no cloud sync or login.
 
-## Accuracy and production notes
-- The dashboard-style graphic and sample amounts on the homepage are illustrative, not a live product screenshot or real customer data.
-- The website describes only the general receivables-management purpose. It does not claim GST filing, e-Way bills, bank synchronization, inventory, bookkeeping, accounting reports, certifications, customer counts, pricing, or guaranteed outcomes.
-- The current marketing page does not require Firebase Authentication. If account login is needed for the actual Recountix app, integrate Firebase separately and secure all backend/database access with proper rules. Never place service-account credentials in browser code.
-- Add accurate Privacy Policy and Terms pages before collecting information through a backend or offering account access. The current form only opens an email draft.
+## Deploy with GitHub Pages
+In repository **Settings → Pages**, select branch `main` and folder `/(root)`, then save. Once GitHub Pages publishes, use the URL shown in Settings → Pages.
