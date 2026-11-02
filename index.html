@@ -382,7 +382,7 @@ setInterval(checkAccountStatus,60000);
 function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function fy(d){let x=new Date(d+'T12:00:00'),y=x.getFullYear();return x.getMonth()>=3?y+'-'+String(y+1).slice(-2):(y-1)+'-'+String(y).slice(-2)}
 const INITIAL_FY='2026-27';
-function createdFinancialYears(){let saved=[];try{saved=JSON.parse(localStorage.getItem('billing_created_fys')||'[]')}catch(_){}if(!Array.isArray(saved)||!saved.length)saved=[INITIAL_FY];if(!saved.includes(INITIAL_FY))saved.push(INITIAL_FY);return [...new Set(saved.filter(x=>/^\\d{4}-\\d{2}$/.test(x)))].sort((a,b)=>Number(b.slice(0,4))-Number(a.slice(0,4)))}
+function createdFinancialYears(){let saved=[];try{saved=JSON.parse(localStorage.getItem('billing_created_fys')||'[]')}catch(_){}const cleanupKey='billing_fy_dropdown_cleanup_26_27_v1';if(localStorage.getItem(cleanupKey)!=='1'){saved=[INITIAL_FY];localStorage.setItem(cleanupKey,'1')}if(!Array.isArray(saved))saved=[];const valid=saved.filter(x=>typeof x==='string'&&x.length===7&&x[4]==='-'&&Number.isInteger(Number(x.slice(0,4)))&&Number.isInteger(Number(x.slice(5))));if(!valid.includes(INITIAL_FY))valid.push(INITIAL_FY);const years=[...new Set(valid)].sort((a,b)=>Number(b.slice(0,4))-Number(a.slice(0,4)));localStorage.setItem('billing_created_fys',JSON.stringify(years));return years}
 function saveCreatedFinancialYears(years){localStorage.setItem('billing_created_fys',JSON.stringify([...new Set(years)].sort((a,b)=>Number(b.slice(0,4))-Number(a.slice(0,4)))))}
 let activeFY=localStorage.getItem('billing_active_fy')||INITIAL_FY;
 function fyStartDate(v){return v.slice(0,4)+'-04-01'}
