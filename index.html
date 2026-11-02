@@ -259,12 +259,12 @@ body:not(.auth-page){background:var(--dash-bg);color:var(--dash-ink);font-family
 </section><div id="appShell" class="hidden"><main><nav class="tabs"><button id="btab" onclick="tab('bill')">New Bill</button><button id="htab" class="secondary" onclick="tab('history')">Invoice History</button><button id="ctab" class="secondary" onclick="tab('customers')">Customers</button><button id="stab" class="secondary" onclick="tab('settings')">Shop Settings</button></nav>
 <section id="bill">
 <div class="panel"><h3>Bill details</h3><div class="grid">
-<div class="field"><label>Working Financial Year</label><select id="activeFY" onchange="setActiveFY(this.value)"></select></div><div class="field"><label>Memo No.</label><input id="no"></div><div class="field"><label>Date</label><input id="date" type="date" onchange="syncFYFromDate()"></div><div class="field"><label>Type</label><select id="type"><option>Cash Memo</option><option>Estimate</option></select></div><div class="field"><label>Customer name</label><input id="cust"></div><div class="field"><label>Mobile</label><input id="phone"></div><div class="field wide"><label>Address</label><input id="address"></div></div></div>
-<div class="panel"><h3>Manual items</h3><div class="scroll"><table><thead><tr><th>#</th><th>Description</th><th>Qty</th><th>Rate ₹</th><th>Amount ₹</th><th>Serial / Warranty note</th><th></th></tr></thead><tbody id="items"></tbody></table></div><div class="actions"><button class="secondary" onclick="add()">+ Add item</button></div><div class="total">Subtotal: <span id="subTotal">₹0.00</span><br>Discount: <span id="discountView">₹0.00</span><br>Taxable Amount: <span id="taxableView">₹0.00</span><br>GST: <span id="gstView">₹0.00</span><br><strong>Grand Total: <span id="sum">₹0.00</span></strong></div><div class="grid invoice-extra"><div class="field"><label>Discount (₹)</label><input id="discount" type="number" min="0" step="0.01" value="0" oninput="calc()"></div><div class="field"><label>Tax Type</label><select id="taxMode" onchange="calc()"><option value="none">Non-GST</option><option value="gst">GST</option></select></div><div class="field"><label>GST Rate (%)</label><select id="gstRate" onchange="calc()"><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></div><div class="field"><label>Payment Received (₹)</label><input id="received" type="number" min="0" step="0.01" value="0" oninput="calc()"></div><div class="field"><label>Balance Due (₹)</label><input id="balanceDue" readonly value="₹0.00"></div></div><p class="note">GST is split equally into CGST and SGST for intra-state invoices. Verify tax applicability before issuing.</p><div class="field"><label>Amount in words (optional)</label><input id="words"></div></div>
+<div class="field"><label>Memo No.</label><input id="no"></div><div class="field"><label>Date</label><input id="date" type="date" onchange="syncFYFromDate()"></div><div class="field"><label>Type</label><select id="type"><option>Cash Memo</option><option>Estimate</option></select></div><div class="field"><label>Customer name</label><input id="cust"></div><div class="field"><label>Mobile</label><input id="phone"></div><div class="field wide"><label>Address</label><input id="address"></div></div></div>
+<div class="panel"><h3>Manual items</h3><div class="scroll"><table><thead><tr><th>#</th><th>Description</th><th>Qty</th><th>Rate ₹</th><th>Amount ₹</th><th>Serial / Warranty note</th><th></th></tr></thead><tbody id="items"></tbody></table></div><div class="actions"><button class="secondary" onclick="add()">+ Add item</button></div><div class="total">Subtotal: <span id="subTotal">₹0.00</span><br>Discount: <span id="discountView">₹0.00</span><br><strong>Grand Total: <span id="sum">₹0.00</span></strong></div><div class="grid invoice-extra"><div class="field"><label>Discount (%)</label><input id="discountPercent" type="number" min="0" max="100" step="0.01" value="0" oninput="calc()"></div><div class="field"><label>Payment Received (₹)</label><input id="received" type="number" min="0" step="0.01" value="0" oninput="calc()"></div><div class="field"><label>Balance Due (₹)</label><input id="balanceDue" readonly value="₹0.00"></div></div><p class="note">Non-GST invoice. Discount is calculated as a percentage of the subtotal.</p><div class="field"><label>Amount in words (optional)</label><input id="words"></div></div>
 <div class="panel"><div class="grid"><div class="field wide"><label>Notes</label><textarea id="memo"></textarea></div><div class="field wide"><label>Terms & Conditions</label><textarea id="terms"></textarea></div></div><div class="actions"><button onclick="save()">Save bill</button><button class="secondary" onclick="printBill()">Print A5 / Save PDF</button><button class="secondary" onclick="fresh()">New / Clear</button></div><p class="note">Saved in this browser. Export a backup from History.</p></div></section>
 <section id="history" class="hidden"><div class="panel"><h3>Invoice History</h3><div class="grid"><div class="field"><label>Financial Year (Apr–Mar)</label><select id="fy" onchange="render()"></select></div><div class="field"><label>From date</label><input id="from" type="date" onchange="render()"></div><div class="field"><label>To date</label><input id="to" type="date" onchange="render()"></div><div class="field"><label>Customer / mobile</label><input id="search" oninput="render()"></div></div><div class="actions"><button class="secondary" onclick="clearF()">Clear filters</button><button class="secondary" onclick="backup()">Export JSON backup</button><button class="secondary" onclick="document.getElementById('file').click()">Import backup</button><input class="hidden" id="file" type="file" accept="application/json" onchange="restore(event)"></div><div class="scroll"><table><thead><tr><th>No.</th><th>Date</th><th>Customer</th><th>Type</th><th>Total</th><th>Action</th></tr></thead><tbody id="historyRows"></tbody></table></div><p id="summary" class="note"></p></div></section>
 <section id="customers" class="hidden"><div class="panel"><h3>Customer Management</h3><p class="note">Customer profiles are automatically created from your saved invoices.</p><div class="grid"><div class="field wide"><label>Search customer (name / mobile)</label><input id="customerSearch" placeholder="Search customers…" oninput="renderCustomers()"></div></div><div class="scroll"><table><thead><tr><th>Customer</th><th>Mobile</th><th>Total Bills</th><th>Total Purchase</th><th>Last Purchase</th><th>Action</th></tr></thead><tbody id="customerRows"></tbody></table></div><p id="customerSummary" class="note"></p></div><div id="customerDetail" class="panel hidden"></div></section>
-<section id="settings" class="hidden"><div class="panel"><h3>Shop Management</h3><p class="note">Manage your shop profile. These details appear on every new printed invoice.</p><div class="grid"><div class="field wide"><label>Shop logo</label><input id="shopLogoFile" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleShopLogo(event)"><div id="shopLogoPreview" style="margin-top:10px;display:flex;align-items:center;gap:12px"><span class="note">No logo uploaded</span></div><button type="button" class="secondary" onclick="removeShopLogo()">Remove logo</button></div><div class="field"><label>Shop name</label><input id="shop" placeholder="Your shop name"></div><div class="field"><label>Phone number</label><input id="shopPhone" type="tel" placeholder="+91"></div><div class="field"><label>Email address</label><input id="shopEmail" type="email" placeholder="shop@example.com"></div><div class="field"><label>GSTIN (optional)</label><input id="shopGstin" placeholder="GST number"></div><div class="field wide"><label>Complete shop address</label><textarea id="shopAddress" rows="3" placeholder="Shop no., street, area, city, state, PIN code"></textarea></div><div class="field"><label>Invoice prefix</label><input id="prefix"></div><div class="field wide"><label>Default Terms & Conditions</label><textarea id="defaultTerms"></textarea></div></div><div class="actions"><button onclick="saveSettings()">Save shop profile</button></div></div></section></main><div id="print"></div></div>
+<section id="settings" class="hidden"><div class="panel"><h3>Shop Management</h3><p class="note">Manage your shop profile. These details appear on every new printed invoice.</p><div class="grid"><div class="field"><label>Working Financial Year</label><select id="settingsFY" onchange="setActiveFY(this.value)"></select></div><div class="field wide"><label>Shop logo</label><input id="shopLogoFile" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleShopLogo(event)"><div id="shopLogoPreview" style="margin-top:10px;display:flex;align-items:center;gap:12px"><span class="note">No logo uploaded</span></div><button type="button" class="secondary" onclick="removeShopLogo()">Remove logo</button></div><div class="field"><label>Shop name</label><input id="shop" placeholder="Your shop name"></div><div class="field"><label>Phone number</label><input id="shopPhone" type="tel" placeholder="+91"></div><div class="field"><label>Email address</label><input id="shopEmail" type="email" placeholder="shop@example.com"></div><div class="field wide"><label>Complete shop address</label><textarea id="shopAddress" rows="3" placeholder="Shop no., street, area, city, state, PIN code"></textarea></div><div class="field"><label>Invoice prefix</label><input id="prefix"></div><div class="field wide"><label>Default Terms & Conditions</label><textarea id="defaultTerms"></textarea></div></div><div class="actions"><button onclick="saveSettings()">Save shop profile</button></div></div></section></main><div id="print"></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 const SUPABASE_URL="https://qrokclcrbumnggoykucl.supabase.co",SUPABASE_KEY="sb_publishable_cpQRe6sg6HI4Oz_FSEo4sw_rKDUGx_k";
@@ -398,7 +398,7 @@ function initFY(){let set=new Set([fy(today()),activeFY,...bills.map(b=>fy(b.dat
 function clearF(){$('fy').value='all';$('from').value=$('to').value=$('search').value='';render()}
 async function del(id){if(confirm('Delete this bill permanently?')){if(currentUser&&isUuid(id)){const {error}=await sb.from('invoices').delete().eq('id',id);if(error){alert('Cloud delete failed: '+error.message);return}}bills=bills.filter(b=>b.id!==id);saveData();render()}}
 function printSaved(id){openBill(id);printBill()}
-function renderInvoice(b){let rows=b.items.map((x,i)=>'<tr><td style="text-align:center">'+(i+1)+'</td><td>'+esc(x.desc)+'</td><td>'+esc(x.serial||'—')+'</td><td style="text-align:center">'+esc(x.serial?'As noted':'—')+'</td><td style="text-align:right">'+cash(x.rate)+'</td><td style="text-align:center">'+x.qty+'</td><td style="text-align:right">'+cash(x.qty*x.rate)+'</td></tr>').join('');let d=new Date(b.date+'T12:00:00'),dateText=isNaN(d)?b.date:d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});let amountWords=b.words||'Amount in words not entered';$('print').innerHTML='<div class="invoice-top"><div class="logo-brand">'+(cfg.shopLogo?'<img src="'+cfg.shopLogo+'" style="width:76px;height:76px;object-fit:contain" alt="Shop logo">':'<div class="kc-mark">KC</div>')+'<div><h1>'+esc(cfg.shop||'Krishna Computer')+'</h1><div class="brand-sub">Sales • Service • Support</div><div class="contact">☎ '+esc(cfg.shopPhone||'')+(cfg.shopEmail?'<br>✉ '+esc(cfg.shopEmail):'')+(cfg.shopGstin?'<br>GSTIN: '+esc(cfg.shopGstin):'')+'<br>⌖ '+esc(cfg.shopAddress||'')+'</div></div></div><div style="font-size:10pt;font-weight:bold;color:#174d85;text-align:right">COMPUTER<br>SALES & SERVICE</div></div><div class="invoice-title"><div class="inv-meta"><b>Invoice No.:</b> '+esc(b.no)+'<br><b>Date:</b> '+esc(dateText)+'</div><div class="memo-pill">'+esc(b.type)+'<small>(Non-GST)</small></div><div class="inv-meta right"><b>Financial Year:</b> '+esc(fy(b.date))+'<br><b>Validity:</b> —</div></div><div class="customer"><div class="customer-head">♟ Customer Details</div><div class="customer-body"><b>Name:</b> '+esc(b.cust)+'<br><b>Phone:</b> '+esc(b.phone||'—')+'<br><b>Address:</b> '+esc(b.address||'—')+'</div></div><table><thead><tr><th>Sr.</th><th>Item Description</th><th>Serial Number</th><th>Warranty Note</th><th>Rate (₹)</th><th>Qty</th><th>Amount (₹)</th></tr></thead><tbody>'+rows+'</tbody></table><table class="totals"><tbody><tr><td>Sub Total:</td><td>'+cash(b.total)+'</td></tr><tr class="grand"><td>Total Amount:</td><td>'+cash(b.total)+'</td></tr></tbody></table><div class="words-band">₹ &nbsp; Amount in Words:<span>'+esc(amountWords)+'</span></div><div class="bottom"><div><div class="terms-title">Terms & Conditions</div><div class="terms">'+esc(b.terms||cfg.defaultTerms)+'</div><div class="note-line"><b>Note:</b> '+esc(b.memo||'—')+'</div></div><div><div style="text-align:center;font-size:11pt;color:#174d85;font-weight:bold;margin-top:28px">Thank You!<br><span style="font-size:9pt;color:#222;font-weight:normal">Visit Again…</span></div><div class="signature"><span>Customer Signature</span><span>Authorized Signature</span></div></div></div><div class="footer">For Support: '+esc(cfg.shopPhone||'')+' &nbsp; | &nbsp; '+esc(cfg.shop||'Krishna Computer')+'</div>'}
+function renderInvoice(b){let rows=b.items.map((x,i)=>'<tr><td style="text-align:center">'+(i+1)+'</td><td>'+esc(x.desc)+'</td><td>'+esc(x.serial||'—')+'</td><td style="text-align:center">'+esc(x.serial?'As noted':'—')+'</td><td style="text-align:right">'+cash(x.rate)+'</td><td style="text-align:center">'+x.qty+'</td><td style="text-align:right">'+cash(x.qty*x.rate)+'</td></tr>').join('');let d=new Date(b.date+'T12:00:00'),dateText=isNaN(d)?b.date:d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});let amountWords=b.words||'Amount in words not entered';$('print').innerHTML='<div class="invoice-top"><div class="logo-brand">'+(cfg.shopLogo?'<img src="'+cfg.shopLogo+'" style="width:76px;height:76px;object-fit:contain" alt="Shop logo">':'<div class="kc-mark">KC</div>')+'<div><h1>'+esc(cfg.shop||'Krishna Computer')+'</h1><div class="brand-sub">Sales • Service • Support</div><div class="contact">☎ '+esc(cfg.shopPhone||'')+(cfg.shopEmail?'<br>✉ '+esc(cfg.shopEmail):'')+'<br>⌖ '+esc(cfg.shopAddress||'')+'</div></div></div><div style="font-size:10pt;font-weight:bold;color:#174d85;text-align:right">COMPUTER<br>SALES & SERVICE</div></div><div class="invoice-title"><div class="inv-meta"><b>Invoice No.:</b> '+esc(b.no)+'<br><b>Date:</b> '+esc(dateText)+'</div><div class="memo-pill">'+esc(b.type)+'<small>(Non-GST)</small></div><div class="inv-meta right"><b>Financial Year:</b> '+esc(fy(b.date))+'<br><b>Validity:</b> —</div></div><div class="customer"><div class="customer-head">♟ Customer Details</div><div class="customer-body"><b>Name:</b> '+esc(b.cust)+'<br><b>Phone:</b> '+esc(b.phone||'—')+'<br><b>Address:</b> '+esc(b.address||'—')+'</div></div><table><thead><tr><th>Sr.</th><th>Item Description</th><th>Serial Number</th><th>Warranty Note</th><th>Rate (₹)</th><th>Qty</th><th>Amount (₹)</th></tr></thead><tbody>'+rows+'</tbody></table><table class="totals"><tbody><tr><td>Sub Total:</td><td>'+cash(b.total)+'</td></tr><tr class="grand"><td>Total Amount:</td><td>'+cash(b.total)+'</td></tr></tbody></table><div class="words-band">₹ &nbsp; Amount in Words:<span>'+esc(amountWords)+'</span></div><div class="bottom"><div><div class="terms-title">Terms & Conditions</div><div class="terms">'+esc(b.terms||cfg.defaultTerms)+'</div><div class="note-line"><b>Note:</b> '+esc(b.memo||'—')+'</div></div><div><div style="text-align:center;font-size:11pt;color:#174d85;font-weight:bold;margin-top:28px">Thank You!<br><span style="font-size:9pt;color:#222;font-weight:normal">Visit Again…</span></div><div class="signature"><span>Customer Signature</span><span>Authorized Signature</span></div></div></div><div class="footer">For Support: '+esc(cfg.shopPhone||'')+' &nbsp; | &nbsp; '+esc(cfg.shop||'Krishna Computer')+'</div>'}
 function printBill(){let b=billObj();if(!b.cust){alert('Enter customer name first.');return}renderInvoice(b);window.print()}
 async function shareBillWhatsApp(id){
  const b=bills.find(x=>x.id===id);if(!b)return;
@@ -419,74 +419,84 @@ async function shareBillWhatsApp(id){
 }
 
 
-/* Advanced billing totals: discount, GST and payment tracking */
-function advancedTotals(subtotal,discount,mode,rate,received){
- const disc=Math.min(Math.max(0,Number(discount)||0),Math.max(0,subtotal));
- const taxable=Math.max(0,subtotal-disc),gst=mode==='gst'?taxable*(Number(rate)||0)/100:0;
- const total=Math.round((taxable+gst)*100)/100,paid=Math.max(0,Number(received)||0);
- return {subtotal,discount:disc,taxable,gst,rate:mode==='gst'?(Number(rate)||0):0,taxMode:mode||'none',cgst:gst/2,sgst:gst/2,total,received:paid,balance:Math.max(0,Math.round((total-paid)*100)/100)};
+/* Non-GST billing with percentage discount and FY in settings */
+function nonGstTotals(subtotal,percent,received){
+ const p=Math.min(100,Math.max(0,Number(percent)||0));
+ const discount=Math.round(subtotal*p)/100;
+ const total=Math.max(0,Math.round((subtotal-discount)*100)/100);
+ const paid=Math.max(0,Number(received)||0);
+ return {subtotal,discountPercent:p,discount,total,received:paid,balance:Math.max(0,Math.round((total-paid)*100)/100),taxMode:'none',gst:0,rate:0};
 }
 const baseCalc=calc;
 function calc(){
  baseCalc();
  const subtotal=lines().reduce((a,x)=>a+x.qty*x.rate,0);
- const t=advancedTotals(subtotal,$('discount')?.value,$('taxMode')?.value,$('gstRate')?.value,$('received')?.value);
+ const t=nonGstTotals(subtotal,$('discountPercent')?.value,$('received')?.value);
  if($('subTotal'))$('subTotal').textContent=cash(t.subtotal);
- if($('discountView'))$('discountView').textContent=cash(t.discount);
- if($('taxableView'))$('taxableView').textContent=cash(t.taxable);
- if($('gstView'))$('gstView').textContent=cash(t.gst);
+ if($('discountView'))$('discountView').textContent=cash(t.discount)+' ('+t.discountPercent+'%)';
  $('sum').textContent=cash(t.total);
  if($('balanceDue'))$('balanceDue').value=cash(t.balance);
 }
 const baseBillObj=billObj;
 function billObj(){
  const b=baseBillObj(),subtotal=b.items.reduce((a,x)=>a+x.qty*x.rate,0);
- return {...b,...advancedTotals(subtotal,$('discount')?.value,$('taxMode')?.value,$('gstRate')?.value,$('received')?.value)};
+ return {...b,...nonGstTotals(subtotal,$('discountPercent')?.value,$('received')?.value)};
 }
 const baseFresh=fresh;
-function fresh(){baseFresh();$('discount').value='0';$('taxMode').value='none';$('gstRate').value='18';$('received').value='0';calc()}
+function fresh(){baseFresh();$('discountPercent').value='0';$('received').value='0';calc()}
 const baseOpenBill=openBill;
 function openBill(id){
  baseOpenBill(id);
  const b=bills.find(x=>x.id===id);if(!b)return;
- $('discount').value=Number(b.discount)||0;
- $('taxMode').value=b.taxMode||'none';
- $('gstRate').value=String(b.rate||18);
+ const subtotal=(b.items||[]).reduce((a,x)=>a+(Number(x.qty)||0)*(Number(x.rate)||0),0);
+ let percent=Number(b.discountPercent);
+ if(!Number.isFinite(percent))percent=subtotal>0?((Number(b.discount)||0)/subtotal*100):0;
+ $('discountPercent').value=Math.min(100,Math.max(0,percent));
  $('received').value=Number(b.received)||0;
  calc();
 }
 const baseRenderInvoice=renderInvoice;
 function renderInvoice(b){
  baseRenderInvoice(b);
- const t=advancedTotals(Number(b.subtotal??(b.items||[]).reduce((a,x)=>a+x.qty*x.rate,0)),b.discount,b.taxMode,b.rate,b.received);
+ const subtotal=(b.items||[]).reduce((a,x)=>a+(Number(x.qty)||0)*(Number(x.rate)||0),0);
+ const percent=Number.isFinite(Number(b.discountPercent))?Number(b.discountPercent):(subtotal>0?(Number(b.discount)||0)/subtotal*100:0);
+ const t=nonGstTotals(subtotal,percent,b.received);
  const pill=$('print').querySelector('.memo-pill small');
- if(pill)pill.textContent=t.taxMode==='gst'?'GST Invoice':'Non-GST Invoice';
+ if(pill)pill.textContent='Non-GST Invoice';
  const totals=$('print').querySelector('.totals tbody');
- if(totals){
-  totals.innerHTML='<tr><td>Sub Total:</td><td>'+cash(t.subtotal)+'</td></tr><tr><td>Discount:</td><td>− '+cash(t.discount)+'</td></tr><tr><td>Taxable Amount:</td><td>'+cash(t.taxable)+'</td></tr>'+(t.taxMode==='gst'?'<tr><td>CGST ('+(t.rate/2)+'%):</td><td>'+cash(t.cgst)+'</td></tr><tr><td>SGST ('+(t.rate/2)+'%):</td><td>'+cash(t.sgst)+'</td></tr>':'')+'<tr class="grand"><td>Grand Total:</td><td>'+cash(t.total)+'</td></tr><tr><td>Payment Received:</td><td>'+cash(t.received)+'</td></tr><tr><td>Balance Due:</td><td>'+cash(t.balance)+'</td></tr>';
- }
+ if(totals)totals.innerHTML='<tr><td>Sub Total:</td><td>'+cash(t.subtotal)+'</td></tr><tr><td>Discount ('+t.discountPercent+'%):</td><td>− '+cash(t.discount)+'</td></tr><tr class="grand"><td>Grand Total:</td><td>'+cash(t.total)+'</td></tr><tr><td>Payment Received:</td><td>'+cash(t.received)+'</td></tr><tr><td>Balance Due:</td><td>'+cash(t.balance)+'</td></tr>';
 }
-async function shareBillWhatsApp(id){
- const b=bills.find(x=>x.id===id);if(!b)return;
- if(!b.phone){alert('Customer mobile number is missing.');return}
- if(!window.html2pdf){alert('PDF generator is loading. Please try again in a moment.');return}
- try{
-  renderInvoice(b);const el=$('print');el.classList.add('pdf-render');await new Promise(resolve=>setTimeout(resolve,350));
-  const options={margin:8,filename:'Invoice-'+(b.no||'bill')+'.pdf',image:{type:'jpeg',quality:0.96},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
-  const pdf=await html2pdf().set(options).from(el).toPdf().get('pdf'),blob=pdf.output('blob');el.classList.remove('pdf-render');
-  const file=new File([blob],options.filename,{type:'application/pdf'});
-  if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){await navigator.share({files:[file],title:'Invoice '+(b.no||''),text:'Invoice from '+(cfg.shop||'our shop')});return}
-  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=options.filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);
-  shareWhatsApp(b.phone,'Invoice '+(b.no||'')+' total '+cash(b.total)+'. Please attach the downloaded PDF in this chat.');
-  alert('PDF downloaded. Attach it in WhatsApp to send.');
- }catch(e){$('print').classList.remove('pdf-render');if(e.name!=='AbortError')alert('Could not create/share PDF: '+(e.message||e))}
+function initFY(){
+ let set=new Set([fy(today()),activeFY,...bills.map(b=>fy(b.date))]),y=+fy(today()).slice(0,4);
+ for(let i=y-8;i<=y+1;i++)set.add(i+'-'+String(i+1).slice(-2));
+ const years=[...set].sort().reverse();
+ $('fy').innerHTML='<option value="all">All years</option>'+years.map(x=>'<option>'+x+'</option>').join('');
+ $('fy').value=activeFY;
+ if(!set.has(activeFY))activeFY=fy(today());
+ $('settingsFY').innerHTML=years.map(x=>'<option value="'+x+'">'+x+'</option>').join('');
+ $('settingsFY').value=activeFY;
+ localStorage.setItem('billing_active_fy',activeFY);
 }
-function loadSettings(){['shop','shopPhone','shopAddress','shopEmail','shopGstin','prefix','defaultTerms'].forEach(k=>$(k).value=cfg[k]||'');renderShopLogo()}
+function setActiveFY(v){
+ activeFY=v;localStorage.setItem('billing_active_fy',v);
+ if($('settingsFY'))$('settingsFY').value=v;
+ if($('fy')){$('fy').value=v;render()}
+ const date=$('date');if(date&&fy(date.value)!==v)date.value=fyStartDate(v);
+ if($('no'))$('no').value=nextNo();
+}
+function syncFYFromDate(){
+ if(!$('date').value)return;
+ activeFY=fy($('date').value);localStorage.setItem('billing_active_fy',activeFY);
+ if($('settingsFY'))$('settingsFY').value=activeFY;
+ if($('fy'))$('fy').value=activeFY;
+ if($('no'))$('no').value=nextNo();
+}
+function loadSettings(){['shop','shopPhone','shopAddress','shopEmail','prefix','defaultTerms'].forEach(k=>$(k).value=cfg[k]||'');if($('settingsFY'))$('settingsFY').value=activeFY;renderShopLogo()}
 function renderShopLogo(){const p=$('shopLogoPreview');if(!p)return;p.innerHTML=cfg.shopLogo?'<img src="'+cfg.shopLogo+'" alt="Shop logo preview" style="width:76px;height:76px;object-fit:contain;border:1px solid #dcebe2;border-radius:12px;padding:5px;background:white"><span class="note">Current shop logo</span>':'<span class="note">No logo uploaded yet</span>'}
 function handleShopLogo(e){const f=e.target.files&&e.target.files[0];if(!f)return;if(!/^image\/(png|jpeg|webp)$/.test(f.type)){alert('Please choose a PNG, JPG or WEBP image.');e.target.value='';return}if(f.size>1500000){alert('Logo must be smaller than 1.5 MB.');e.target.value='';return}const reader=new FileReader();reader.onload=()=>{cfg.shopLogo=String(reader.result||'');renderShopLogo()};reader.readAsDataURL(f)}
 function removeShopLogo(){cfg.shopLogo='';$('shopLogoFile').value='';renderShopLogo()}
 function updateShopHeader(){const name=cfg.shop||'Computer Shop Billing CRM';$('brand').textContent=name;const logo=$('topShopLogo');if(logo)logo.innerHTML=cfg.shopLogo?'<img src="'+cfg.shopLogo+'" alt="Shop logo">':'<span>'+(esc(name.trim().split(/\\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase())||'KC')+'</span>'}
-function saveSettings(){['shop','shopPhone','shopAddress','shopEmail','shopGstin','prefix','defaultTerms'].forEach(k=>cfg[k]=$(k).value.trim());localStorage.setItem('billing_settings',JSON.stringify(cfg));updateShopHeader();if(!edit)$('terms').value=cfg.defaultTerms;alert('Settings saved.')}
+function saveSettings(){['shop','shopPhone','shopAddress','shopEmail','prefix','defaultTerms'].forEach(k=>cfg[k]=$(k).value.trim());if($('settingsFY'))setActiveFY($('settingsFY').value);delete cfg.shopGstin;localStorage.setItem('billing_settings',JSON.stringify(cfg));updateShopHeader();if(!edit)$('terms').value=cfg.defaultTerms;alert('Shop settings and Working Financial Year saved.')}
 function backup(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({bills,settings:cfg},null,2)],{type:'application/json'}));a.download='billing-backup.json';a.click();URL.revokeObjectURL(a.href)}
 function restore(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.bills))throw Error('Invalid backup');if(confirm('Replace existing bills with backup?')){bills=d.bills;cfg=d.settings||cfg;saveData();localStorage.setItem('billing_settings',JSON.stringify(cfg));initFY();render();alert('Imported')}}catch(x){alert(x.message)}};r.readAsText(f);e.target.value=''}
 updateShopHeader();$('date').value=today();$('terms').value=cfg.defaultTerms;initFY();$('appShell').classList.add('hidden');if(localStorage.getItem('crm_login_theme')==='dark')document.body.classList.add('auth-dark');$('rememberMe').checked=rememberChoice;showLogin();if(passwordRecoveryMode)showPasswordRecovery();sb.auth.getSession().then(({data})=>{if(data.session?.user&&!passwordRecoveryMode)authReady(data.session.user)});
