@@ -139,6 +139,62 @@ body:not(.auth-page){background:var(--dash-bg);color:var(--dash-ink);font-family
  #appShell button,#appShell .panel,#appHeader button{transition:none}
 }
 
+
+/* ===== Desktop workspace refinement ===== */
+@media (min-width: 761px){
+  body:not(.auth-page){background:#f1f6f3}
+  #appHeader{
+    height:78px;padding:0 38px 0 30px;
+    background:linear-gradient(105deg,#103b2d 0%,#126344 55%,#16845d 100%);
+    box-shadow:0 7px 24px rgba(15,65,45,.16)
+  }
+  #appHeader>div{display:flex;align-items:center;gap:24px;min-width:0}
+  #appHeader .top-shop-identity{gap:14px}
+  #appHeader .top-shop-logo{width:48px;height:48px;flex-basis:48px;border-radius:14px}
+  #appHeader .top-shop-name b{font-size:18px;letter-spacing:-.45px;max-width:520px}
+  #appHeader .top-shop-name small{font-size:10px;letter-spacing:.55px;text-transform:uppercase}
+  #appHeader .note{font-size:11px!important;padding-left:22px;border-left:1px solid #ffffff30}
+  #appShell main{max-width:1720px;margin:0 auto;padding:34px 54px 64px 330px}
+  #appShell .tabs{
+    top:78px;width:276px;padding:30px 19px;
+    background:linear-gradient(180deg,#fff 0%,#f9fcfa 100%);
+    border-right:1px solid #deebe3;box-shadow:8px 0 28px rgba(18,75,51,.045)
+  }
+  #appShell .tabs:before{
+    content:"WORKSPACE";display:block;padding:0 13px 13px;
+    color:#91a99c;font-size:10px;font-weight:850;letter-spacing:1.7px
+  }
+  #appShell .tabs button{min-height:50px;padding:13px 16px;font-size:13px;border-radius:12px}
+  #appShell .tabs button:not(.secondary){background:linear-gradient(105deg,#e4f7eb,#f5fbf7);border-color:#d7eee0;box-shadow:inset 4px 0 #159568,0 3px 10px #1b76500b}
+  #appShell section{width:100%;max-width:1400px;margin:0 auto}
+  #appShell .panel{padding:28px 30px;margin-bottom:22px;border-radius:20px;box-shadow:0 10px 32px rgba(19,76,51,.055)}
+  #appShell .panel h3{font-size:18px;margin-bottom:22px;padding-bottom:16px}
+  #appShell .grid{grid-template-columns:repeat(4,minmax(150px,1fr));gap:18px}
+  #appShell .field label{font-size:11px}
+  #appShell input,#appShell select{min-height:44px;padding:12px 14px}
+  #appShell textarea{min-height:100px;padding:13px 14px}
+  #appShell .scroll{overflow-x:auto}
+  #appShell table{min-width:850px}
+  #appShell th{padding:14px 13px;font-size:10px}
+  #appShell td{padding:12px 13px;font-size:13px}
+  #appShell .actions{gap:12px;margin-top:20px}
+  #appShell .actions button{min-height:42px;padding:11px 18px}
+  #appShell .total{margin:18px 0 20px;padding:17px 20px;font-size:21px}
+  #appShell #history .grid{grid-template-columns:repeat(4,minmax(150px,1fr));align-items:end}
+  #appShell #settings .grid{grid-template-columns:repeat(3,minmax(180px,1fr))}
+  #appShell #settings .wide{grid-column:span 2}
+}
+@media (min-width: 1400px){
+  #appShell main{padding-left:350px;padding-right:68px}
+  #appShell .panel{padding:32px 36px}
+  #appShell #bill>.panel:first-child .grid{grid-template-columns:repeat(4,minmax(180px,1fr))}
+}
+@media (min-width:761px) and (max-width:1100px){
+  #appShell main{padding-left:295px;padding-right:26px}
+  #appShell .tabs{width:250px}
+  #appShell .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #appShell #settings .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 </style></head><body class="auth-page">
 <header id="appHeader"><button id="menuToggle" type="button" onclick="toggleSidebar()" aria-label="Open navigation">☰</button><div><div class="top-shop-identity"><div id="topShopLogo" class="top-shop-logo"><span>KC</span></div><div class="top-shop-name"><b id="brand">Computer Shop Billing CRM</b><small>Shop Billing & Management</small></div></div><div class="note" style="color:#d7deee">Non-GST Estimate / Cash Memo · No stock or cash drawer</div></div></header>
 <section id="authPanel" class="login-shell">
