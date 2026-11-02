@@ -292,6 +292,54 @@ body{position:relative;isolation:isolate;background:#eef7f3}
  #appShell button:not(.secondary):not(.danger),.login-submit{animation:none}
 }
 
+
+/* Correct button bubbles: keep sidebar navigation clean, animate only action buttons */
+#appShell button.nav-link,
+#appShell .tabs button.nav-link:not(.active){
+ background:transparent!important;
+ background-image:none!important;
+ color:#61796d!important;
+ box-shadow:none!important;
+}
+#appShell .tabs button.nav-link.active{
+ background:linear-gradient(100deg,#e5f7ed,#f4fbf6)!important;
+ background-image:linear-gradient(100deg,#e5f7ed,#f4fbf6)!important;
+ color:#08734f!important;
+ box-shadow:inset 3px 0 #159568,0 3px 9px rgba(20,112,73,.045)!important;
+}
+#appShell .tabs button.nav-link .nav-icon{background:#eff6f1!important;color:#668675!important}
+#appShell .tabs button.nav-link.active .nav-icon{background:linear-gradient(145deg,#16865d,#25b77e)!important;color:#fff!important}
+#appShell button:not(.secondary):not(.danger):not(.nav-link),
+.login-submit{
+ background-color:#159568!important;
+ background-image:
+  radial-gradient(circle at 12% 105%,rgba(255,255,255,.62) 0 5px,transparent 6px),
+  radial-gradient(circle at 34% 112%,rgba(220,255,241,.48) 0 7px,transparent 8px),
+  radial-gradient(circle at 57% 108%,rgba(255,255,255,.42) 0 4px,transparent 5px),
+  radial-gradient(circle at 78% 114%,rgba(220,255,241,.5) 0 6px,transparent 7px),
+  radial-gradient(circle at 94% 106%,rgba(255,255,255,.48) 0 4px,transparent 5px),
+  linear-gradient(180deg,#29bd83 0%,#10845a 100%)!important;
+ background-size:100% 220%,100% 220%,100% 220%,100% 220%,100% 220%,100% 100%!important;
+ background-position:0% 100%,0% 100%,0% 100%,0% 100%,0% 100%,center!important;
+ animation:visibleButtonBubbles 3.8s ease-in-out infinite!important;
+}
+.login-submit{
+ background-image:
+  radial-gradient(circle at 12% 105%,rgba(255,255,255,.65) 0 5px,transparent 6px),
+  radial-gradient(circle at 34% 112%,rgba(220,255,241,.5) 0 7px,transparent 8px),
+  radial-gradient(circle at 57% 108%,rgba(255,255,255,.45) 0 4px,transparent 5px),
+  radial-gradient(circle at 78% 114%,rgba(220,255,241,.52) 0 6px,transparent 7px),
+  radial-gradient(circle at 94% 106%,rgba(255,255,255,.5) 0 4px,transparent 5px),
+  linear-gradient(180deg,#56d5a0,#29b77e)!important;
+}
+@keyframes visibleButtonBubbles{
+  0%,100%{background-position:0% 100%,0% 100%,0% 100%,0% 100%,0% 100%,center!important}
+  50%{background-position:0% 0%,0% 0%,0% 0%,0% 0%,0% 0%,center!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #appShell button:not(.secondary):not(.danger):not(.nav-link),.login-submit{animation:none!important}
+}
+
 </style></head><body class="auth-page"><div id="bubbleBackground" aria-hidden="true"><span style="--x:4%;--size:42px;--duration:19s;--delay:-3s;--drift:28px"></span><span style="--x:16%;--size:19px;--duration:15s;--delay:-11s;--drift:-24px"></span><span style="--x:29%;--size:66px;--duration:24s;--delay:-8s;--drift:35px"></span><span style="--x:43%;--size:28px;--duration:17s;--delay:-5s;--drift:-18px"></span><span style="--x:57%;--size:52px;--duration:22s;--delay:-14s;--drift:22px"></span><span style="--x:70%;--size:24px;--duration:16s;--delay:-2s;--drift:-30px"></span><span style="--x:82%;--size:74px;--duration:26s;--delay:-17s;--drift:26px"></span><span style="--x:94%;--size:34px;--duration:18s;--delay:-9s;--drift:-20px"></span></div>
 <header id="appHeader"><button id="menuToggle" type="button" onclick="toggleSidebar()" aria-label="Open navigation">☰</button><div><div class="top-shop-identity"><div id="topShopLogo" class="top-shop-logo"><span>KC</span></div><div class="top-shop-name"><b id="brand">Computer Shop Billing CRM</b><small>Shop Billing & Management</small></div></div><div class="note" style="color:#d7deee">Non-GST Estimate / Cash Memo · No stock or cash drawer</div></div></header>
 <section id="authPanel" class="login-shell">
