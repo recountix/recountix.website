@@ -528,9 +528,9 @@ function clearF(){$('fy').value='all';$('from').value=$('to').value=$('search').
 async function del(id){if(!hasPermission('delete_invoice')){alert('You do not have permission to delete invoices.');return}if(confirm('Delete this bill permanently?')){if(currentUser&&isUuid(id)){const {error}=await sb.from('invoices').delete().eq('id',id);if(error){alert('Cloud delete failed: '+error.message);return}}bills=bills.filter(b=>b.id!==id);saveData();render()}}
 function printSaved(id){openBill(id);printBill()}
 function renderInvoiceOriginal(b){let rows=b.items.map((x,i)=>'<tr><td style="text-align:center">'+(i+1)+'</td><td>'+esc(x.desc)+'</td><td>'+esc(x.serial||'—')+'</td><td style="text-align:center">'+esc(x.serial?'As noted':'—')+'</td><td style="text-align:right">'+cash(x.rate)+'</td><td style="text-align:center">'+x.qty+'</td><td style="text-align:right">'+cash(x.qty*x.rate)+'</td></tr>').join('');let d=new Date(b.date+'T12:00:00'),dateText=isNaN(d)?b.date:d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});let amountWords=b.words||'Amount in words not entered';$('print').innerHTML='<div class="invoice-top"><div class="logo-brand">'+(cfg.shopLogo?'<img src="'+cfg.shopLogo+'" style="width:76px;height:76px;object-fit:contain" alt="Shop logo">':'<div class="kc-mark">KC</div>')+'<div><h1>'+esc(cfg.shop||'Krishna Computer')+'</h1><div class="brand-sub">Sales • Service • Support</div><div class="contact">☎ '+esc(cfg.shopPhone||'')+(cfg.shopEmail?'<br>✉ '+esc(cfg.shopEmail):'')+'<br>⌖ '+esc(cfg.shopAddress||'')+'</div></div></div><div style="font-size:10pt;font-weight:bold;color:#174d85;text-align:right">COMPUTER<br>SALES & SERVICE</div></div><div class="invoice-title"><div class="inv-meta"><b>Invoice No.:</b> '+esc(b.no)+'<br><b>Date:</b> '+esc(dateText)+'</div><div class="memo-pill">'+esc(b.type)+'<small>(Non-GST)</small></div><div class="inv-meta right"><b>Financial Year:</b> '+esc(fy(b.date))+'<br><b>Validity:</b> —</div></div><div class="customer"><div class="customer-head">♟ Customer Details</div><div class="customer-body"><b>Name:</b> '+esc(b.cust)+'<br><b>Phone:</b> '+esc(b.phone||'—')+'<br><b>Address:</b> '+esc(b.address||'—')+'</div></div><table><thead><tr><th>Sr.</th><th>Item Description</th><th>Serial Number</th><th>Warranty Note</th><th>Rate (₹)</th><th>Qty</th><th>Amount (₹)</th></tr></thead><tbody>'+rows+'</tbody></table><table class="totals"><tbody><tr><td>Sub Total:</td><td>'+cash(b.total)+'</td></tr><tr class="grand"><td>Total Amount:</td><td>'+cash(b.total)+'</td></tr></tbody></table><div class="words-band">₹ &nbsp; Amount in Words:<span>'+esc(amountWords)+'</span></div><div class="bottom"><div><div class="terms-title">Terms & Conditions</div><div class="terms">'+esc(b.terms||cfg.defaultTerms)+'</div><div class="note-line"><b>Note:</b> '+esc(b.memo||'—')+'</div></div><div><div style="text-align:center;font-size:11pt;color:#174d85;font-weight:bold;margin-top:28px">Thank You!<br><span style="font-size:9pt;color:#222;font-weight:normal">Visit Again…</span></div><div class="signature"><span>Customer Signature</span><span>Authorized Signature</span></div></div></div><div class="footer">For Support: '+esc(cfg.shopPhone||'')+' &nbsp; | &nbsp; '+esc(cfg.shop||'Krishna Computer')+'</div>'}
-function printBill(){let b=billObj();if(!b.cust){alert('Enter customer name first.');return}renderInvoice(b);window.print()}
+async function printBill(){const b=billObj();if(!b.cust){alert('Enter customer name first.');return}try{const blob=await makeInvoicePdfBlob(b);if(!blob||blob.size<1000)throw new Error('PDF could not be generated.');const url=URL.createObjectURL(blob),w=window.open(url,'_blank');if(!w){const a=document.createElement('a');a.href=url;a.download='Invoice-'+(b.no||'bill')+'.pdf';a.click()}setTimeout(()=>URL.revokeObjectURL(url),120000)}catch(e){alert('Could not prepare invoice: '+(e.message||e))}}
 function pdfSafe(v){return String(v??'').replace(/[₹]/g,'Rs. ').replace(/[–—]/g,'-').replace(/[•]/g,'|').replace(/[^\x20-\x7E]/g,'?')}
-function makeInvoicePdfBlob(b){
+async function makeInvoicePdfBlob(b){
  const JsPDF=window.jspdf&&window.jspdf.jsPDF;if(!JsPDF)throw new Error('PDF library did not load. Check internet and refresh.');
  const doc=new JsPDF({orientation:'portrait',unit:'mm',format:'a4'}),W=210,L=12,R=198,usable=186;
  const subtotal=(b.items||[]).reduce((a,x)=>a+(Number(x.qty)||0)*(Number(x.rate)||0),0);
@@ -541,12 +541,12 @@ function makeInvoicePdfBlob(b){
  const line=(x1,y1,x2,y2)=>doc.line(x1,y1,x2,y2);
  const section=(label)=>{doc.setFillColor(232,241,250);doc.rect(L,y,usable,7,'F');txt(label,L+2,y+5,9);y+=10};
  const pageCheck=(need)=>{if(y+need>280){doc.addPage();y=15;txt(cfg.shop||'Computer Shop',L,y,14);y+=9;line(L,y,R,y);y+=7}};
- doc.setTextColor(20,55,95);doc.setFont('helvetica','bold');txt(cfg.shop||'Computer Shop',L,y,17);txt('COMPUTER SALES & SERVICE',R,y,8,{align:'right'});y+=7;
- doc.setFont('helvetica','normal');doc.setTextColor(35,45,60);
- if(cfg.shopPhone){txt('Phone: '+cfg.shopPhone,L,y,8);y+=4}
- if(cfg.shopEmail){txt('Email: '+cfg.shopEmail,L,y,8);y+=4}
- if(cfg.shopAddress){const a=doc.splitTextToSize(pdfSafe(cfg.shopAddress),usable);doc.text(a,L,y);y+=a.length*4}
- y+=3;line(L,y,R,y);y+=8;
+ doc.setFillColor(18,61,50);doc.roundedRect(L,9,usable,29,3,3,'F');
+ let titleX=L+5;
+ if(cfg.shopLogo){try{const logoImage=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{try{const c=document.createElement('canvas');c.width=im.naturalWidth||im.width;c.height=im.naturalHeight||im.height;const cx=c.getContext('2d');cx.fillStyle='#ffffff';cx.fillRect(0,0,c.width,c.height);cx.drawImage(im,0,0);resolve(c.toDataURL('image/jpeg',.92))}catch(err){reject(err)}};im.onerror=reject;im.src=cfg.shopLogo});doc.addImage(logoImage,'JPEG',L+4,12,22,22);titleX=L+31}catch(err){console.warn('Invoice logo could not be embedded:',err)}}
+ doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');txt(cfg.shop||'Computer Shop',titleX,20,16);doc.setFont('helvetica','normal');txt('COMPUTER SALES & SERVICE',titleX,26,8);
+ let contactY=32;if(cfg.shopPhone){txt('Phone: '+cfg.shopPhone,titleX,contactY,7);contactY+=4}if(cfg.shopEmail){txt('Email: '+cfg.shopEmail,titleX,contactY,7);contactY+=4}if(cfg.shopAddress){const a=doc.splitTextToSize(pdfSafe(cfg.shopAddress),R-titleX-4);doc.text(a,titleX,contactY);contactY+=a.length*3.5}
+ y=44;doc.setTextColor(35,45,60);doc.setDrawColor(30,135,95);line(L,y,R,y);y+=8;
  doc.setFont('helvetica','bold');txt('INVOICE',L,y,14);txt('Invoice No: '+(b.no||'-'),R,y,9,{align:'right'});y+=6;
  doc.setFont('helvetica','normal');txt('Date: '+(b.date||'-'),L,y,9);txt('Financial Year: '+fy(b.date),R,y,9,{align:'right'});y+=6;
  txt('Type: '+(b.type||'Invoice')+' | NON-GST',L,y,9);y+=9;
@@ -582,7 +582,7 @@ async function shareBillWhatsApp(id){
  const b=bills.find(x=>x.id===id);if(!b)return;
  if(!b.phone){alert('Customer mobile number is missing.');return}
  try{
-  const blob=makeInvoicePdfBlob(b);
+  const blob=await makeInvoicePdfBlob(b);
   if(!blob||blob.size<1000)throw new Error('PDF could not be generated.');
   const file=new File([blob],'Invoice-'+(b.no||'bill')+'.pdf',{type:'application/pdf'});
   if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){await navigator.share({files:[file],title:'Invoice '+(b.no||''),text:'Invoice from '+(cfg.shop||'our shop')});return}
