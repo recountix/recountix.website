@@ -262,6 +262,36 @@ body{position:relative;isolation:isolate;background:#eef7f3}
 #appHeader,main,#authPanel{position:relative;z-index:1}
 @media(prefers-reduced-motion:reduce){#bubbleBackground span{animation:none;display:none}}
 @media print{#bubbleBackground{display:none!important}}
+
+/* Animated bubble shimmer inside primary buttons, behind button text */
+#appShell button:not(.secondary):not(.danger),
+.login-submit{
+ background-image:
+  radial-gradient(circle at 12% 120%,rgba(255,255,255,.34) 0 3px,transparent 4px),
+  radial-gradient(circle at 42% 115%,rgba(220,255,241,.28) 0 5px,transparent 6px),
+  radial-gradient(circle at 76% 125%,rgba(255,255,255,.25) 0 4px,transparent 5px),
+  radial-gradient(circle at 91% 110%,rgba(210,255,237,.3) 0 2px,transparent 3px),
+  linear-gradient(180deg,#25b77d 0%,#12865c 100%);
+ background-size:180% 180%,210% 210%,160% 160%,230% 230%,100% 100%;
+ background-position:0% 100%,35% 100%,70% 100%,100% 100%,center;
+ animation:buttonBubbleFlow 7s ease-in-out infinite;
+ overflow:hidden;
+}
+.login-submit{background-image:
+ radial-gradient(circle at 12% 120%,rgba(255,255,255,.38) 0 3px,transparent 4px),
+ radial-gradient(circle at 42% 115%,rgba(220,255,241,.3) 0 5px,transparent 6px),
+ radial-gradient(circle at 76% 125%,rgba(255,255,255,.26) 0 4px,transparent 5px),
+ radial-gradient(circle at 91% 110%,rgba(210,255,237,.32) 0 2px,transparent 3px),
+ linear-gradient(180deg,#56d5a0,#29b77e);
+}
+@keyframes buttonBubbleFlow{
+ 0%,100%{background-position:0% 100%,35% 100%,70% 100%,100% 100%,center}
+ 50%{background-position:0% 0%,35% 0%,70% 0%,100% 0%,center}
+}
+@media(prefers-reduced-motion:reduce){
+ #appShell button:not(.secondary):not(.danger),.login-submit{animation:none}
+}
+
 </style></head><body class="auth-page"><div id="bubbleBackground" aria-hidden="true"><span style="--x:4%;--size:42px;--duration:19s;--delay:-3s;--drift:28px"></span><span style="--x:16%;--size:19px;--duration:15s;--delay:-11s;--drift:-24px"></span><span style="--x:29%;--size:66px;--duration:24s;--delay:-8s;--drift:35px"></span><span style="--x:43%;--size:28px;--duration:17s;--delay:-5s;--drift:-18px"></span><span style="--x:57%;--size:52px;--duration:22s;--delay:-14s;--drift:22px"></span><span style="--x:70%;--size:24px;--duration:16s;--delay:-2s;--drift:-30px"></span><span style="--x:82%;--size:74px;--duration:26s;--delay:-17s;--drift:26px"></span><span style="--x:94%;--size:34px;--duration:18s;--delay:-9s;--drift:-20px"></span></div>
 <header id="appHeader"><button id="menuToggle" type="button" onclick="toggleSidebar()" aria-label="Open navigation">☰</button><div><div class="top-shop-identity"><div id="topShopLogo" class="top-shop-logo"><span>KC</span></div><div class="top-shop-name"><b id="brand">Computer Shop Billing CRM</b><small>Shop Billing & Management</small></div></div><div class="note" style="color:#d7deee">Non-GST Estimate / Cash Memo · No stock or cash drawer</div></div></header>
 <section id="authPanel" class="login-shell">
