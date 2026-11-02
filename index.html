@@ -466,16 +466,19 @@ async function adminUserAction(body){
  if(error){let message=error.message;try{const d=await error.context.json();if(d?.error)message=d.error}catch(_){}throw new Error(message)}
  if(data?.error)throw new Error(data.error);return data;
 }
+let managedUserPermissions={};
 async function loadUsers(){
  const rows=$('managedUserRows');if(!hasPermission('manage_users')){rows.innerHTML='<tr><td colspan="4">User Management permission required.</td></tr>';return}
  rows.innerHTML='<tr><td colspan="4">Loading users…</td></tr>';
- try{const data=await adminUserAction({action:'list'});const users=data.users||[];
-  rows.innerHTML=users.map(u=>'<tr><td><strong>'+esc(u.username)+'</strong></td><td>'+esc(u.email||'')+'</td><td>'+(u.is_active?'<span style="color:#13845c;font-weight:700">Active</span>':'<span style="color:#b5473d;font-weight:700">Inactive</span>')+'</td><td><button class="secondary" onclick="editUserPermissions(\''+esc(u.user_id)+'\',\''+esc(u.username)+'\','+JSON.stringify(u.permissions||{})+')">Permissions</button> <button class="secondary" onclick="toggleManagedUser(\''+esc(u.user_id)+'\','+(!u.is_active)+')">'+(u.is_active?'Deactivate':'Activate')+'</button> '+(isAdminUser()?'<button class="secondary" onclick="resetManagedUserPassword(\''+esc(u.email||'')+'\')">Reset password</button>':'')</td></tr>').join('')||'<tr><td colspan="4">No user accounts found.</td></tr>';
+ try{
+  const data=await adminUserAction({action:'list'}),users=data.users||[];
+  managedUserPermissions=Object.fromEntries(users.map(u=>[u.user_id,u.permissions||{}]));
+  rows.innerHTML=users.map(u=>'<tr><td><strong>'+esc(u.username)+'</strong></td><td>'+esc(u.email||'')+'</td><td>'+(u.is_active?'<span style="color:#13845c;font-weight:700">Active</span>':'<span style="color:#b5473d;font-weight:700">Inactive</span>')+'</td><td><button class="secondary" data-id="'+esc(u.user_id)+'" data-name="'+esc(u.username)+'" onclick="editUserPermissions(this.dataset.id,this.dataset.name)">Permissions</button> <button class="secondary" data-id="'+esc(u.user_id)+'" data-active="'+(u.is_active?0:1)+'" onclick="toggleManagedUser(this.dataset.id,!!Number(this.dataset.active))">'+(u.is_active?'Deactivate':'Activate')+'</button> <button class="secondary" data-email="'+esc(u.email||'')+'" onclick="resetManagedUserPassword(this.dataset.email)" '+(isAdminUser()?'':'disabled')+'>Reset password</button></td></tr>').join('')||'<tr><td colspan="4">No user accounts found.</td></tr>';
  }catch(error){rows.innerHTML='<tr><td colspan="4">'+esc(error.message)+'</td></tr>'}
 }
 let editingPermissionUserId=null;
 const permissionFields=['create_bill','edit_invoice','delete_invoice','manage_customers','view_payments_reports','manage_shop_settings','manage_users'];
-function editUserPermissions(userId,username,permissions){editingPermissionUserId=userId;$('permissionEditorTitle').textContent='Permissions: '+username;$('permissionEditorMessage').textContent='';permissionFields.forEach(key=>{const el=$('perm_'+key);el.checked=permissions[key]===true;el.disabled=key==='manage_users'&&!isAdminUser()});$('userPermissionsPanel').classList.remove('hidden');$('userPermissionsPanel').scrollIntoView({behavior:'smooth',block:'start'})}
+function editUserPermissions(userId,username){const permissions=managedUserPermissions[userId]||{};editingPermissionUserId=userId;$('permissionEditorTitle').textContent='Permissions: '+username;$('permissionEditorMessage').textContent='';permissionFields.forEach(key=>{const el=$('perm_'+key);el.checked=permissions[key]===true;el.disabled=key==='manage_users'&&!isAdminUser()});$('userPermissionsPanel').classList.remove('hidden');$('userPermissionsPanel').scrollIntoView({behavior:'smooth',block:'start'})}
 function closeUserPermissions(){editingPermissionUserId=null;$('userPermissionsPanel').classList.add('hidden')}
 async function saveUserPermissions(){if(!editingPermissionUserId)return;const permissions={};permissionFields.forEach(key=>permissions[key]=$('perm_'+key).checked);const msg=$('permissionEditorMessage');msg.textContent='Saving permissions…';try{await adminUserAction({action:'set-permissions',user_id:editingPermissionUserId,permissions});msg.textContent='Permissions saved successfully.';await loadUsers();closeUserPermissions()}catch(error){msg.textContent=error.message||'Could not save permissions.'}}
 async function createManagedUser(){
