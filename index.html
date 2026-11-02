@@ -80,7 +80,7 @@ const authStorage={
  removeItem:async key=>{localStorage.removeItem(key);sessionStorage.removeItem(key)}
 };
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{storage:authStorage,storageKey:'krishna-computer-auth-v1',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-let currentUser=null,authReadyUserId=null,loginBusy=false;
+let currentUser=null,authReadyUserId=null,loginBusy=false,passwordRecoveryMode=window.location.hash.includes('type=recovery');
 const $=id=>document.getElementById(id),cash=n=>'₹'+(+n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let bills=[],cfg=JSON.parse(localStorage.getItem('billing_settings')||'null')||{shop:'Computer Shop',shopPhone:'',shopAddress:'',prefix:'CM',defaultTerms:'1. Goods once sold will not be taken back.\n2. Warranty as per manufacturer policy.\n3. Keep this memo for warranty claims.'},edit=null;
 function saveData(){localStorage.setItem('billing_bills',JSON.stringify(bills));if(currentUser)cloudSaveAll()}
@@ -114,11 +114,11 @@ async function updatePassword(){
  if(password.length<8){$('recoveryMessage').textContent='Use at least 8 characters.';return}
  if(password!==confirmPassword){$('recoveryMessage').textContent='Passwords do not match.';return}
  const button=document.querySelector('#passwordResetPanel .login-submit');button.disabled=true;button.textContent='Updating…';
- try{const {error}=await sb.auth.updateUser({password});if(error)throw error;await sb.auth.signOut({scope:'global'});showLogin();setAuthMessage('Password updated. Sign in with your new password.','success')}
+ try{const {error}=await sb.auth.updateUser({password});if(error)throw error;passwordRecoveryMode=false;await sb.auth.signOut({scope:'global'});showLogin();setAuthMessage('Password updated. Sign in with your new password.','success')}
  catch(error){$('recoveryMessage').textContent=error.message||'Password update failed.'}
  finally{button.disabled=false;button.textContent='Update password'}
 }
-async function cancelPasswordReset(){await sb.auth.signOut({scope:'local'});showLogin()}
+async function cancelPasswordReset(){passwordRecoveryMode=false;await sb.auth.signOut({scope:'local'});showLogin()}
 async function resetPassword(){
  if(loginBusy)return;
  setLoginBusy(true);setAuthMessage('Requesting password reset email…');
@@ -134,17 +134,21 @@ async function signOut(){
  currentUser=null;authReadyUserId=null;showLogin();
 }
 async function authReady(user){
- if(!user)return;
+ if(!user||passwordRecoveryMode)return;
  if(authReadyUserId===user.id)return;
  authReadyUserId=user.id;
- const {data:verified,error:verifyError}=await sb.auth.getUser();
- if(verifyError||!verified.user){authReadyUserId=null;await sb.auth.signOut({scope:'local'});showLogin();setAuthMessage('Your session expired. Please sign in again.','error');return}
- const {data:{session:currentSession}}=await sb.auth.getSession();
- if(!currentSession){authReadyUserId=null;showLogin();setAuthMessage('Your session expired. Please sign in again.','error');return}
- const {data:status,error:statusError}=await sb.functions.invoke('secure-login',{body:{action:'check-session'},headers:{Authorization:'Bearer '+currentSession.access_token}});
- if(statusError||!status?.active){authReadyUserId=null;await sb.auth.signOut({scope:'global'});showLogin();setAuthMessage(status?.error||'This account is inactive or your session has expired.','error');return}
- currentUser=verified.user;document.body.classList.remove('auth-page');$('appHeader').style.display='flex';$('authPanel').classList.add('hidden');$('appShell').classList.remove('hidden');
- try{await loadCloud();fresh()}catch(error){alert('CRM opened, but cloud data could not load: '+error.message)}
+ try{
+  const {data:verified,error:verifyError}=await sb.auth.getUser();
+  if(verifyError||!verified.user)throw new Error('Your session expired. Please sign in again.');
+  const {data:{session:currentSession}}=await sb.auth.getSession();
+  if(!currentSession)throw new Error('Your session expired. Please sign in again.');
+  const {data:status,error:statusError}=await sb.functions.invoke('secure-login',{body:{action:'check-session'},headers:{Authorization:'Bearer '+currentSession.access_token}});
+  if(statusError||!status?.active)throw new Error(status?.error||'This account is inactive or your session has expired.');
+  currentUser=verified.user;document.body.classList.remove('auth-page');$('appHeader').style.display='flex';$('authPanel').classList.add('hidden');$('appShell').classList.remove('hidden');
+  try{await loadCloud();fresh()}catch(error){alert('CRM opened, but cloud data could not load: '+error.message)}
+ }catch(error){
+  authReadyUserId=null;currentUser=null;document.body.classList.add('auth-page');$('appHeader').style.display='none';$('appShell').classList.add('hidden');$('authPanel').classList.remove('hidden');$('loginForm').classList.remove('hidden');$('passwordResetPanel').classList.add('hidden');setAuthMessage(error.message||'Could not verify your session. Please try again.','error');
+ }
 }
 async function checkAccountStatus(){
  if(!currentUser)return;
@@ -155,10 +159,12 @@ async function checkAccountStatus(){
   await sb.auth.signOut({scope:'global'});showLogin();setAuthMessage(data?.error||'Your account is inactive. Access has been stopped.','error');
  }
 }
+function showPasswordRecovery(){
+ passwordRecoveryMode=true;document.body.classList.add('auth-page');$('appShell').classList.add('hidden');$('appHeader').style.display='none';$('authPanel').classList.remove('hidden');$('loginForm').classList.add('hidden');$('passwordResetPanel').classList.remove('hidden');
+}
 sb.auth.onAuthStateChange((event,session)=>{
- if(event==='PASSWORD_RECOVERY'){
-  document.body.classList.add('auth-page');$('appShell').classList.add('hidden');$('appHeader').style.display='none';$('authPanel').classList.remove('hidden');$('loginForm').classList.add('hidden');$('passwordResetPanel').classList.remove('hidden');return;
- }
+ if(event==='PASSWORD_RECOVERY'){showPasswordRecovery();return}
+ if(passwordRecoveryMode&&session?.user)return;
  if(session?.user){Promise.resolve().then(()=>authReady(session.user))}
  else if(event==='SIGNED_OUT'){currentUser=null;authReadyUserId=null;showLogin()}
 });
@@ -184,5 +190,5 @@ function loadSettings(){['shop','shopPhone','shopAddress','prefix','defaultTerms
 function saveSettings(){['shop','shopPhone','shopAddress','prefix','defaultTerms'].forEach(k=>cfg[k]=$(k).value.trim());localStorage.setItem('billing_settings',JSON.stringify(cfg));$('brand').textContent=cfg.shop||'Computer Shop Billing CRM';if(!edit)$('terms').value=cfg.defaultTerms;alert('Settings saved.')}
 function backup(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({bills,settings:cfg},null,2)],{type:'application/json'}));a.download='billing-backup.json';a.click();URL.revokeObjectURL(a.href)}
 function restore(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.bills))throw Error('Invalid backup');if(confirm('Replace existing bills with backup?')){bills=d.bills;cfg=d.settings||cfg;saveData();localStorage.setItem('billing_settings',JSON.stringify(cfg));initFY();render();alert('Imported')}}catch(x){alert(x.message)}};r.readAsText(f);e.target.value=''}
-$('brand').textContent=cfg.shop||'Computer Shop Billing CRM';$('date').value=today();$('terms').value=cfg.defaultTerms;initFY();$('appShell').classList.add('hidden');if(localStorage.getItem('crm_login_theme')==='dark')document.body.classList.add('auth-dark');$('rememberMe').checked=rememberChoice;showLogin();sb.auth.getSession().then(({data})=>{if(data.session?.user)authReady(data.session.user)});
+$('brand').textContent=cfg.shop||'Computer Shop Billing CRM';$('date').value=today();$('terms').value=cfg.defaultTerms;initFY();$('appShell').classList.add('hidden');if(localStorage.getItem('crm_login_theme')==='dark')document.body.classList.add('auth-dark');$('rememberMe').checked=rememberChoice;showLogin();if(passwordRecoveryMode)showPasswordRecovery();sb.auth.getSession().then(({data})=>{if(data.session?.user&&!passwordRecoveryMode)authReady(data.session.user)});
 </script></body></html>
