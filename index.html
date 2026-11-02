@@ -117,12 +117,14 @@ async function signOut(){
 }
 async function authReady(user){
  if(!user)return;
- if(authReadyUserId===user.id&&!$('appShell').classList.contains('hidden'))return;
+ if(authReadyUserId===user.id)return;
  authReadyUserId=user.id;
  const {data:verified,error:verifyError}=await sb.auth.getUser();
- if(verifyError||!verified.user){await sb.auth.signOut({scope:'local'});showLogin();setAuthMessage('Your session expired. Please sign in again.','error');return}
- const {data:status,error:statusError}=await sb.functions.invoke('secure-login',{body:{action:'check-session'},headers:{Authorization:'Bearer '+(await sb.auth.getSession()).data.session.access_token}});
- if(statusError||!status?.active){await sb.auth.signOut({scope:'global'});showLogin();setAuthMessage(status?.error||'This account is inactive or your session has expired.','error');return}
+ if(verifyError||!verified.user){authReadyUserId=null;await sb.auth.signOut({scope:'local'});showLogin();setAuthMessage('Your session expired. Please sign in again.','error');return}
+ const {data:{session:currentSession}}=await sb.auth.getSession();
+ if(!currentSession){authReadyUserId=null;showLogin();setAuthMessage('Your session expired. Please sign in again.','error');return}
+ const {data:status,error:statusError}=await sb.functions.invoke('secure-login',{body:{action:'check-session'},headers:{Authorization:'Bearer '+currentSession.access_token}});
+ if(statusError||!status?.active){authReadyUserId=null;await sb.auth.signOut({scope:'global'});showLogin();setAuthMessage(status?.error||'This account is inactive or your session has expired.','error');return}
  currentUser=verified.user;document.body.classList.remove('auth-page');$('appHeader').style.display='flex';$('authPanel').classList.add('hidden');$('appShell').classList.remove('hidden');
  try{await loadCloud();fresh()}catch(error){alert('CRM opened, but cloud data could not load: '+error.message)}
 }
