@@ -203,7 +203,7 @@ body:not(.auth-page){background:var(--dash-bg);color:var(--dash-ink);font-family
 #appShell #customerDetail .customer-stats b{display:block;margin-top:5px}
 @media(max-width:720px){#appShell .tabs{gap:6px}#appShell .tabs button{padding:9px 10px;font-size:12px}}
 
-#print.pdf-render{display:block!important;position:fixed!important;left:-12000px!important;top:0!important;width:794px!important;background:#fff!important;z-index:-1!important;font:9pt Arial,sans-serif;color:#17243a}
+#print.pdf-render{display:block!important;position:fixed!important;left:0!important;top:0!important;width:794px!important;background:#fff!important;z-index:99999!important;font:9pt Arial,sans-serif;color:#17243a}
 #print.pdf-render h1{font-size:24pt;margin:0;color:#123d73}
 #print.pdf-render table{width:100%;min-width:0;border-collapse:collapse;font-size:8.5pt;margin-top:12px}
 #print.pdf-render th{background:#124d88!important;color:#fff!important;font-weight:bold;text-align:center}
@@ -407,7 +407,7 @@ async function shareBillWhatsApp(id){
  try{
   renderInvoice(b);const el=$('print');el.classList.add('pdf-render');
   await new Promise(resolve=>setTimeout(resolve,350));
-  const options={margin:8,filename:'Invoice-'+(b.no||'bill')+'.pdf',image:{type:'jpeg',quality:0.96},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
+  const options={margin:8,filename:'Invoice-'+(b.no||'bill')+'.pdf',image:{type:'jpeg',quality:0.96},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:794,windowHeight:1123},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
   const worker=html2pdf().set(options).from(el).toPdf();const pdf=await worker.get('pdf');const blob=pdf.output('blob');
   el.classList.remove('pdf-render');
   const file=new File([blob],options.filename,{type:'application/pdf'});
