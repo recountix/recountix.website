@@ -260,7 +260,7 @@ body:not(.auth-page){background:var(--dash-bg);color:var(--dash-ink);font-family
 <section id="bill">
 <div class="panel"><h3>Bill details</h3><div class="grid">
 <div class="field"><label>Memo No.</label><input id="no"></div><div class="field"><label>Date</label><input id="date" type="date" onchange="syncFYFromDate()"></div><div class="field"><label>Type</label><select id="type"><option>Cash Memo</option><option>Estimate</option></select></div><div class="field"><label>Customer name</label><input id="cust"></div><div class="field"><label>Mobile</label><input id="phone"></div><div class="field wide"><label>Address</label><input id="address"></div></div></div>
-<div class="panel"><h3>Manual items</h3><div class="scroll"><table><thead><tr><th>#</th><th>Description</th><th>Qty</th><th>Rate ₹</th><th>Amount ₹</th><th>Serial / Warranty note</th><th></th></tr></thead><tbody id="items"></tbody></table></div><div class="actions"><button class="secondary" onclick="add()">+ Add item</button></div><div class="total">Subtotal: <span id="subTotal">₹0.00</span><br>Discount: <span id="discountView">₹0.00</span><br><strong>Grand Total: <span id="sum">₹0.00</span></strong></div><div class="grid invoice-extra"><div class="field"><label>Discount (%)</label><input id="discountPercent" type="number" min="0" max="100" step="0.01" value="0" oninput="calc()"></div><div class="field"><label>Payment Received (₹)</label><input id="received" type="number" min="0" step="0.01" value="0" oninput="calc()"></div><div class="field"><label>Balance Due (₹)</label><input id="balanceDue" readonly value="₹0.00"></div></div><p class="note">Non-GST invoice. Discount is calculated as a percentage of the subtotal.</p><div class="field"><label>Amount in words (optional)</label><input id="words"></div></div>
+<div class="panel"><h3>Manual items</h3><div class="scroll"><table><thead><tr><th>#</th><th>Description</th><th>Qty</th><th>Rate ₹</th><th>Amount ₹</th><th>Serial / Warranty note</th><th></th></tr></thead><tbody id="items"></tbody></table></div><div class="actions"><button class="secondary" onclick="add()">+ Add item</button></div><div class="total">Subtotal: <span id="subTotal">₹0.00</span><br>Discount: <span id="discountView">₹0.00</span><br><strong>Grand Total: <span id="sum">₹0.00</span></strong></div><div class="grid invoice-extra"><div class="field"><label>Discount (%)</label><input id="discountPercent" type="number" min="0" max="100" step="0.01" value="0" oninput="calc()"></div><div class="field"><label>Payment Received (₹)</label><input id="received" type="number" min="0" step="0.01" value="0" oninput="calc()"></div><div class="field"><label>Balance Due (₹)</label><input id="balanceDue" readonly value="₹0.00"></div></div><p class="note">Non-GST invoice. Discount is calculated as a percentage of the subtotal.</p><div class="field"><label>Amount in Words (Auto)</label><input id="words" readonly placeholder="Automatically generated from Grand Total"></div></div>
 <div class="panel"><div class="grid"><div class="field wide"><label>Notes</label><textarea id="memo"></textarea></div><div class="field wide"><label>Terms & Conditions</label><textarea id="terms"></textarea></div></div><div class="actions"><button onclick="save()">Save bill</button><button class="secondary" onclick="printBill()">Print A5 / Save PDF</button><button class="secondary" onclick="fresh()">New / Clear</button></div><p class="note">Saved in this browser. Export a backup from History.</p></div></section>
 <section id="history" class="hidden"><div class="panel"><h3>Invoice History</h3><div class="grid"><div class="field"><label>Financial Year (Apr–Mar)</label><select id="fy" onchange="render()"></select></div><div class="field"><label>From date</label><input id="from" type="date" onchange="render()"></div><div class="field"><label>To date</label><input id="to" type="date" onchange="render()"></div><div class="field"><label>Customer / mobile</label><input id="search" oninput="render()"></div></div><div class="actions"><button class="secondary" onclick="clearF()">Clear filters</button><button class="secondary" onclick="backup()">Export JSON backup</button><button class="secondary" onclick="document.getElementById('file').click()">Import backup</button><input class="hidden" id="file" type="file" accept="application/json" onchange="restore(event)"></div><div class="scroll"><table><thead><tr><th>No.</th><th>Date</th><th>Customer</th><th>Type</th><th>Total</th><th>Action</th></tr></thead><tbody id="historyRows"></tbody></table></div><p id="summary" class="note"></p></div></section>
 <section id="customers" class="hidden"><div class="panel"><h3>Customer Management</h3><p class="note">Customer profiles are automatically created from your saved invoices.</p><div class="grid"><div class="field wide"><label>Search customer (name / mobile)</label><input id="customerSearch" placeholder="Search customers…" oninput="renderCustomers()"></div></div><div class="scroll"><table><thead><tr><th>Customer</th><th>Mobile</th><th>Total Bills</th><th>Total Purchase</th><th>Last Purchase</th><th>Action</th></tr></thead><tbody id="customerRows"></tbody></table></div><p id="customerSummary" class="note"></p></div><div id="customerDetail" class="panel hidden"></div></section>
@@ -472,6 +472,32 @@ function nonGstTotals(subtotal,percent,received){
  const paid=Math.max(0,Number(received)||0);
  return {subtotal,discountPercent:p,discount,total,received:paid,balance:Math.max(0,Math.round((total-paid)*100)/100),taxMode:'none',gst:0,rate:0};
 }
+function amountInWordsIndian(value){
+ const n=Math.round((Number(value)||0)*100)/100;
+ const ones=['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+ const tens=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+ function underThousand(x){
+  x=Math.floor(x);let out=[];
+  if(x>=100){out.push(ones[Math.floor(x/100)]+' Hundred');x%=100}
+  if(x>=20){out.push(tens[Math.floor(x/10)]+(x%10?' '+ones[x%10]:''))}
+  else if(x>0)out.push(ones[x]);
+  return out.join(' ');
+ }
+ function integerWords(x){
+  x=Math.floor(x);if(!x)return 'Zero';
+  const parts=[];
+  const crore=Math.floor(x/10000000);x%=10000000;
+  const lakh=Math.floor(x/100000);x%=100000;
+  const thousand=Math.floor(x/1000);x%=1000;
+  if(crore)parts.push(underThousand(crore)+' Crore');
+  if(lakh)parts.push(underThousand(lakh)+' Lakh');
+  if(thousand)parts.push(underThousand(thousand)+' Thousand');
+  if(x)parts.push(underThousand(x));
+  return parts.join(' ');
+ }
+ const rupees=Math.floor(n),paise=Math.round((n-rupees)*100);
+ return 'Rupees '+integerWords(rupees)+(paise?' and '+underThousand(paise)+' Paise':'')+' Only';
+}
 const baseCalc=calcOriginal;
 function calc(){
  baseCalc();
@@ -481,6 +507,7 @@ function calc(){
  if($('discountView'))$('discountView').textContent=cash(t.discount)+' ('+t.discountPercent+'%)';
  $('sum').textContent=cash(t.total);
  if($('balanceDue'))$('balanceDue').value=cash(t.balance);
+ if($('words'))$('words').value=amountInWordsIndian(t.total);
 }
 const baseBillObj=billObjOriginal;
 function billObj(){
