@@ -139,11 +139,11 @@ async function authReady(user){
  authReadyUserId=user.id;
  try{
   const {data:verified,error:verifyError}=await sb.auth.getUser();
-  if(verifyError||!verified.user)throw new Error('Your session expired. Please sign in again.');
+  if(verifyError||!verified.user){await sb.auth.signOut({scope:'local'});throw new Error('Your session expired. Please sign in again.')}
   const {data:{session:currentSession}}=await sb.auth.getSession();
   if(!currentSession)throw new Error('Your session expired. Please sign in again.');
   const {data:status,error:statusError}=await sb.functions.invoke('secure-login',{body:{action:'check-session'},headers:{Authorization:'Bearer '+currentSession.access_token}});
-  if(statusError||!status?.active)throw new Error(status?.error||'This account is inactive or your session has expired.');
+  if(statusError||!status?.active){if([401,403].includes(statusError?.context?.status))await sb.auth.signOut({scope:'global'});throw new Error(status?.error||'This account is inactive or your session has expired.')}
   currentUser=verified.user;document.body.classList.remove('auth-page');$('appHeader').style.display='flex';$('authPanel').classList.add('hidden');$('appShell').classList.remove('hidden');
   try{await loadCloud();fresh()}catch(error){alert('CRM opened, but cloud data could not load: '+error.message)}
  }catch(error){
