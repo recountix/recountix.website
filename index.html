@@ -96,6 +96,49 @@ body:not(.auth-page){background:var(--dash-bg);color:var(--dash-ink);font-family
 #appHeader .top-shop-name b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:min(48vw,520px)}
 #appHeader .top-shop-name small{font-size:10px;color:#d7eee2;opacity:.9}
 @media(max-width:760px){#appHeader .top-shop-identity{gap:8px}#appHeader .top-shop-logo{width:38px;height:38px;flex-basis:38px;border-radius:10px}#appHeader .top-shop-name b{font-size:13px;max-width:42vw}#appHeader .top-shop-name small{display:none}}
+
+/* ===== Refined professional controls and surfaces ===== */
+#appShell{color:#18392d}
+#appShell .panel{position:relative;overflow:hidden;border:1px solid #e3eee7;border-radius:18px;background:linear-gradient(145deg,#fff 0%,#fcfffd 100%);box-shadow:0 10px 30px rgba(22,76,52,.055);transition:box-shadow .2s,border-color .2s}
+#appShell .panel:hover{border-color:#d6e9dd;box-shadow:0 14px 34px rgba(22,76,52,.075)}
+#appShell .panel h3{font-weight:800}
+#appShell button{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:9px 15px;border:1px solid #149365;border-radius:10px;background:linear-gradient(180deg,#25b77d 0%,#12865c 100%);color:#fff;font-size:12px;font-weight:750;letter-spacing:.12px;line-height:1.2;box-shadow:0 2px 4px rgba(12,116,77,.16),inset 0 1px 0 rgba(255,255,255,.2);transition:transform .16s ease,box-shadow .16s ease,filter .16s ease,border-color .16s ease}
+#appShell button:hover{filter:saturate(1.08) brightness(1.025);transform:translateY(-1px);box-shadow:0 5px 12px rgba(12,116,77,.18),inset 0 1px 0 rgba(255,255,255,.22)}
+#appShell button:active{transform:translateY(0);box-shadow:0 1px 2px rgba(12,116,77,.14)}
+#appShell button:focus-visible,#appHeader button:focus-visible{outline:3px solid rgba(48,190,132,.3);outline-offset:3px}
+#appShell button:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.2);transform:none;box-shadow:none}
+#appShell button.secondary{border:1px solid #d8eae0;background:linear-gradient(180deg,#f7fcf8,#eaf5ee);color:#287653;box-shadow:0 1px 2px rgba(26,91,60,.05)}
+#appShell button.secondary:hover{border-color:#b9ddc8;background:#e6f5eb;box-shadow:0 4px 10px rgba(26,91,60,.09)}
+#appShell button.danger{border:1px solid #f1d4d0;background:linear-gradient(180deg,#fff8f7,#ffefed);color:#b33d34;box-shadow:0 1px 2px rgba(155,44,35,.05)}
+#appShell button.danger:hover{border-color:#eabbb5;background:#ffebe8;box-shadow:0 4px 10px rgba(155,44,35,.08)}
+#appHeader button{min-height:36px;border-radius:10px;padding:8px 13px;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08);transition:background .18s,transform .18s}
+#appHeader button:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.12)}
+#appHeader button.secondary{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.25);color:#fff}
+#appShell .tabs button{min-height:45px;padding:11px 14px;border:1px solid transparent;letter-spacing:.1px;transition:background .16s,color .16s,border-color .16s,transform .16s}
+#appShell .tabs button:not(.secondary){border-color:#d8eee1;background:linear-gradient(110deg,#e5f7ed,#f4fbf6);box-shadow:inset 3px 0 #159568;color:#08734f}
+#appShell .tabs button.secondary{background:transparent;border-color:transparent;color:#587568;box-shadow:none}
+#appShell .tabs button.secondary:hover{background:#f0f8f3;border-color:#e3f0e7;transform:translateX(2px)}
+#appShell .actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+#appShell input,#appShell textarea,#appShell select{min-height:40px;border-radius:10px;background:#fcfefc;border-color:#dce9e1;transition:border-color .16s,box-shadow .16s,background .16s}
+#appShell input:hover,#appShell textarea:hover,#appShell select:hover{border-color:#b9d9c6}
+#appShell input:focus,#appShell textarea:focus,#appShell select:focus{background:#fff;border-color:#31aa79;box-shadow:0 0 0 3px rgba(39,169,115,.12)}
+#appShell .field{gap:7px}
+#appShell .field label{font-size:11px;font-weight:750;letter-spacing:.22px;color:#597669}
+#appShell .scroll{border-radius:13px;box-shadow:0 2px 8px rgba(25,75,51,.025)}
+#appShell table{border-spacing:0}
+#appShell th:first-child{border-top-left-radius:8px}
+#appShell th:last-child{border-top-right-radius:8px}
+#appShell tbody tr:last-child td{border-bottom:0}
+#appShell .total{font-size:19px;font-weight:850;letter-spacing:-.4px}
+@media(max-width:760px){
+ #appShell button{min-height:40px;padding:9px 12px}
+ #appShell .actions button{flex:0 0 auto}
+ #appHeader button{min-height:35px}
+}
+@media(prefers-reduced-motion:reduce){
+ #appShell button,#appShell .panel,#appHeader button{transition:none}
+}
+
 </style></head><body class="auth-page">
 <header id="appHeader"><button id="menuToggle" type="button" onclick="toggleSidebar()" aria-label="Open navigation">☰</button><div><div class="top-shop-identity"><div id="topShopLogo" class="top-shop-logo"><span>KC</span></div><div class="top-shop-name"><b id="brand">Computer Shop Billing CRM</b><small>Shop Billing & Management</small></div></div><div class="note" style="color:#d7deee">Non-GST Estimate / Cash Memo · No stock or cash drawer</div></div><button class="secondary" onclick="tab('settings')">Settings</button><button class="secondary" onclick="signOut()">Logout</button></header>
 <section id="authPanel" class="login-shell">
