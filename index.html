@@ -3,7 +3,7 @@
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f3f5fa;color:#182238;font:14px system-ui,Arial}header{background:#13213e;color:#fff;padding:18px;display:flex;justify-content:space-between;gap:10px}main{max-width:1100px;margin:20px auto;padding:0 14px}.tabs,.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}button{border:0;border-radius:7px;padding:9px 13px;background:#2858d8;color:white;cursor:pointer;font-weight:600}.secondary{background:#e6ebf4;color:#26334d}.danger{background:#b42318}.panel{background:white;border:1px solid #e0e5ef;border-radius:12px;padding:16px;margin:14px 0}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.field{display:flex;flex-direction:column;gap:4px}.field label{font-size:12px;color:#667085}input,textarea,select{width:100%;padding:9px;border:1px solid #d4dbe7;border-radius:7px;font:inherit}.wide{grid-column:span 2}.full{grid-column:1/-1}table{border-collapse:collapse;width:100%;min-width:700px}td,th{padding:8px;border-bottom:1px solid #e3e7ef;text-align:left}th{background:#f7f8fb;font-size:12px}.scroll{overflow:auto}.amount{text-align:right;white-space:nowrap}.total{text-align:right;font-size:18px;font-weight:bold;margin:12px}.hidden{display:none!important}.note{font-size:12px;color:#667085}@media(max-width:720px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:450px){.grid{grid-template-columns:1fr}.wide{grid-column:span 1}}
 #print{display:none}@page{size:A4 portrait;margin:9mm}@media print{body *{visibility:hidden!important}#print,#print *{visibility:visible!important}#print{display:block!important;position:absolute;inset:0;width:100%;font:9pt Arial,sans-serif;color:#17243a}#print h1{font-size:24pt;margin:0;color:#123d73}#print p{margin:4px 0}#print table{width:100%;min-width:0;border-collapse:collapse;font-size:8.5pt;margin-top:12px}#print th{background:#124d88!important;color:#fff!important;font-weight:bold;text-align:center}#print th,#print td{border:1px solid #8796a9;padding:6px 5px;background:white}#print .invoice-top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border-bottom:3px solid #168be1;padding:0 0 10px;margin-bottom:10px}#print .logo-brand{display:flex;gap:12px;align-items:center}#print .kc-mark{font-size:25pt;font-weight:900;font-style:italic;color:#1475c9;border:3px solid #1475c9;border-radius:50%;padding:5px 10px}#print .brand-sub{font-size:11pt;font-style:italic;color:#173d68}#print .contact{font-size:9pt;line-height:1.5;margin-top:6px}#print .invoice-title{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin:12px 0}#print .memo-pill{background:#123d73;color:white;border-radius:30px;padding:7px 25px;text-align:center;font-size:17pt;font-weight:bold}#print .memo-pill small{display:block;font-size:9pt}#print .inv-meta{font-size:9pt;line-height:1.6}#print .inv-meta.right{text-align:right}#print .customer{border:1px solid #9bc9f5;border-radius:9px;overflow:hidden;margin:10px 0}#print .customer-head{background:#dcecff;color:#143e70;font-weight:bold;padding:7px 10px;font-size:11pt}#print .customer-body{padding:8px 12px;line-height:1.55}#print .totals{width:45%;margin:10px 0 0 auto;border-collapse:collapse}#print .totals td{padding:6px 8px;border:1px solid #9bc9f5;text-align:right;font-weight:bold}#print .totals .grand{background:#124d88!important;color:white!important;font-size:12pt}#print .words-band{background:#dcecff!important;border-radius:9px;padding:9px 12px;margin:10px 0;font-weight:bold;color:#143e70}#print .words-band span{display:block;font-size:11pt;color:#111;margin-top:3px}#print .bottom{display:grid;grid-template-columns:1.3fr 1fr;gap:14px;margin-top:12px}#print .terms{white-space:pre-wrap;font-size:8pt;line-height:1.4}#print .terms-title{display:inline-block;background:#123d73!important;color:white!important;border-radius:18px;padding:5px 12px;font-weight:bold;margin-bottom:6px}#print .signature{display:flex;justify-content:space-between;margin-top:32px;font-size:8pt}#print .footer{background:#123d73!important;color:white!important;margin-top:18px;padding:9px 12px;font-weight:bold;text-align:center;font-size:9pt}#print .note-line{font-size:8pt;white-space:pre-wrap;margin-top:6px}}
-/* Premium authentication UI */
+/* Premium authentication UI */.recovery-panel{margin-top:24px;padding-top:20px;border-top:1px solid #e7f0eb}.recovery-panel h2{margin:0 0 6px;color:#173b33;font-size:20px}.recovery-panel>p{margin:0 0 14px;color:#789087;font-size:12px}.recovery-back{display:block;margin:14px auto 0;background:transparent;color:#2a9b70;box-shadow:none;font-size:12px}body.auth-dark .recovery-panel{border-color:#29483b}body.auth-dark .recovery-panel h2{color:#e2f7ec}
 #appHeader{display:none}.auth-page #appHeader{display:none}.login-shell{min-height:100vh;width:100%;margin:0;padding:32px 18px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 12% 10%,#d7fff0 0,transparent 32%),radial-gradient(circle at 90% 85%,#dff7ee 0,transparent 30%),linear-gradient(135deg,#f6fffb,#eef8f4);color:#173b33}
 .login-card{width:min(100%,440px);padding:34px 34px 22px;background:rgba(255,255,255,.96);border:1px solid #dcefe7;border-radius:24px;box-shadow:0 24px 70px rgba(27,91,69,.14),0 5px 14px rgba(26,78,61,.06);animation:loginRise .55s ease both}
 @keyframes loginRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
@@ -51,6 +51,14 @@ body.auth-dark .login-caption{color:#759b89}
       <button id="loginButton" class="login-submit" type="submit"><span id="loginSpinner" class="login-spinner hidden"></span><span id="loginButtonText">Sign in securely</span><span class="submit-arrow">→</span></button>
       <p id="authMessage" class="login-message" role="status" aria-live="polite"></p>
     </form>
+    <section id="passwordResetPanel" class="recovery-panel hidden">
+      <h2>Set a new password</h2><p>Choose a strong password for your Admin account.</p>
+      <div class="login-field"><label for="newPassword">New password</label><div class="login-input-wrap"><input id="newPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div></div>
+      <div class="login-field"><label for="confirmNewPassword">Confirm new password</label><div class="login-input-wrap"><input id="confirmNewPassword" type="password" autocomplete="new-password" placeholder="Re-enter new password"></div></div>
+      <button type="button" class="login-submit" onclick="updatePassword()">Update password</button>
+      <button type="button" class="recovery-back" onclick="cancelPasswordReset()">Back to login</button>
+      <p id="recoveryMessage" class="login-message" role="status"></p>
+    </section>
     <div class="login-foot"><span class="secure-dot"></span> Protected by Supabase Authentication <span class="login-version">SECURE SESSION</span></div>
   </div>
   <div class="login-caption">KRISHNA COMPUTER <span>•</span> BILLING & MANAGEMENT</div>
@@ -83,7 +91,7 @@ function setAuthMessage(message,type=''){const el=$('authMessage');el.textConten
 function setLoginBusy(busy){loginBusy=busy;$('loginButton').disabled=busy;$('loginSpinner').classList.toggle('hidden',!busy);$('loginButtonText').textContent=busy?'Verifying securely…':'Sign in securely'}
 function togglePassword(){const input=$('authPassword'),button=document.querySelector('.eye-toggle');const show=input.type==='password';input.type=show?'text':'password';button.textContent=show?'Hide':'Show'}
 function toggleLoginTheme(){document.body.classList.toggle('auth-dark');localStorage.setItem('crm_login_theme',document.body.classList.contains('auth-dark')?'dark':'light')}
-function showLogin(){currentUser=null;authReadyUserId=null;document.body.classList.add('auth-page');$('appShell').classList.add('hidden');$('appHeader').style.display='none';$('authPanel').classList.remove('hidden');$('authPassword').value='';setAuthMessage('')}
+function showLogin(){currentUser=null;authReadyUserId=null;document.body.classList.add('auth-page');$('appShell').classList.add('hidden');$('appHeader').style.display='none';$('authPanel').classList.remove('hidden');$('loginForm').classList.remove('hidden');$('passwordResetPanel').classList.add('hidden');$('authPassword').value='';setAuthMessage('')}
 async function signIn(){
  if(loginBusy)return;
  const username=$('authEmail').value.trim(),password=$('authPassword').value;
@@ -101,6 +109,16 @@ async function signIn(){
  }catch(error){setAuthMessage(error.message||'Unable to sign in. Please try again.','error')}
  finally{setLoginBusy(false)}
 }
+async function updatePassword(){
+ const password=$('newPassword').value,confirmPassword=$('confirmNewPassword').value;
+ if(password.length<8){$('recoveryMessage').textContent='Use at least 8 characters.';return}
+ if(password!==confirmPassword){$('recoveryMessage').textContent='Passwords do not match.';return}
+ const button=document.querySelector('#passwordResetPanel .login-submit');button.disabled=true;button.textContent='Updating…';
+ try{const {error}=await sb.auth.updateUser({password});if(error)throw error;await sb.auth.signOut({scope:'global'});showLogin();setAuthMessage('Password updated. Sign in with your new password.','success')}
+ catch(error){$('recoveryMessage').textContent=error.message||'Password update failed.'}
+ finally{button.disabled=false;button.textContent='Update password'}
+}
+async function cancelPasswordReset(){await sb.auth.signOut({scope:'local'});showLogin()}
 async function resetPassword(){
  if(loginBusy)return;
  setLoginBusy(true);setAuthMessage('Requesting password reset email…');
@@ -138,6 +156,9 @@ async function checkAccountStatus(){
  }
 }
 sb.auth.onAuthStateChange((event,session)=>{
+ if(event==='PASSWORD_RECOVERY'){
+  document.body.classList.add('auth-page');$('appShell').classList.add('hidden');$('appHeader').style.display='none';$('authPanel').classList.remove('hidden');$('loginForm').classList.add('hidden');$('passwordResetPanel').classList.remove('hidden');return;
+ }
  if(session?.user){Promise.resolve().then(()=>authReady(session.user))}
  else if(event==='SIGNED_OUT'){currentUser=null;authReadyUserId=null;showLogin()}
 });
