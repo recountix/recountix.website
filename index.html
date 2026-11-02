@@ -253,7 +253,16 @@ body:not(.auth-page){background:var(--dash-bg);color:var(--dash-ink);font-family
 #appShell .sidebar-status-dot{width:7px;height:7px;border-radius:50%;background:#24ad75;box-shadow:0 0 0 4px #e6f6ed}
 #menuToggle{border-radius:11px!important}
 @media(max-width:760px){#appShell .tabs{padding:17px 13px 15px;gap:6px;background:#fff;box-shadow:0 18px 45px rgba(11,54,36,.2)}#appShell .sidebar-brand{padding-bottom:15px}#appShell .tabs button.nav-link{min-height:48px}body.sidebar-open #menuToggle{background:rgba(255,255,255,.25)}}
-</style></head><body class="auth-page">
+
+/* Animated floating bubble background */
+body{position:relative;isolation:isolate;background:#eef7f3}
+#bubbleBackground{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 12% 15%,rgba(119,231,190,.16),transparent 38%),radial-gradient(ellipse at 88% 82%,rgba(84,165,222,.12),transparent 40%)}
+#bubbleBackground span{position:absolute;bottom:-130px;left:var(--x);width:var(--size);height:var(--size);border-radius:50%;border:1px solid rgba(53,160,126,.22);background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.78),rgba(112,218,181,.12) 48%,rgba(71,155,188,.04) 72%);box-shadow:inset 0 0 18px rgba(255,255,255,.35),0 4px 24px rgba(53,160,126,.06);animation:bubbleFloat var(--duration) linear var(--delay) infinite;opacity:0}
+@keyframes bubbleFloat{0%{transform:translate3d(0,0,0) scale(.72);opacity:0}12%{opacity:.72}78%{opacity:.48}100%{transform:translate3d(var(--drift),-115vh,0) scale(1.18);opacity:0}}
+#appHeader,main,#authPanel{position:relative;z-index:1}
+@media(prefers-reduced-motion:reduce){#bubbleBackground span{animation:none;display:none}}
+@media print{#bubbleBackground{display:none!important}}
+</style></head><body class="auth-page"><div id="bubbleBackground" aria-hidden="true"><span style="--x:4%;--size:42px;--duration:19s;--delay:-3s;--drift:28px"></span><span style="--x:16%;--size:19px;--duration:15s;--delay:-11s;--drift:-24px"></span><span style="--x:29%;--size:66px;--duration:24s;--delay:-8s;--drift:35px"></span><span style="--x:43%;--size:28px;--duration:17s;--delay:-5s;--drift:-18px"></span><span style="--x:57%;--size:52px;--duration:22s;--delay:-14s;--drift:22px"></span><span style="--x:70%;--size:24px;--duration:16s;--delay:-2s;--drift:-30px"></span><span style="--x:82%;--size:74px;--duration:26s;--delay:-17s;--drift:26px"></span><span style="--x:94%;--size:34px;--duration:18s;--delay:-9s;--drift:-20px"></span></div>
 <header id="appHeader"><button id="menuToggle" type="button" onclick="toggleSidebar()" aria-label="Open navigation">☰</button><div><div class="top-shop-identity"><div id="topShopLogo" class="top-shop-logo"><span>KC</span></div><div class="top-shop-name"><b id="brand">Computer Shop Billing CRM</b><small>Shop Billing & Management</small></div></div><div class="note" style="color:#d7deee">Non-GST Estimate / Cash Memo · No stock or cash drawer</div></div></header>
 <section id="authPanel" class="login-shell">
   <div class="login-card">
