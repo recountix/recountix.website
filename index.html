@@ -285,19 +285,17 @@ async function loadCloud(){
  const cleanupKey='billing_fy_cleanup_26_27_v1';
  if(localStorage.getItem(cleanupKey)!=='1'){
   const localBefore=JSON.parse(localStorage.getItem('billing_bills')||'[]');
-  const localKeep=localBefore.filter(b=>b.date&&fy(b.date)===INITIAL_FY);
+  const localKeep=localBefore.filter(b=>b.date&&b.date>='2026-04-01');
   localStorage.setItem('billing_bills',JSON.stringify(localKeep));
   const {error:oldBeforeError}=await sb.from('invoices').delete().eq('user_id',currentUser.id).lt('invoice_date','2026-04-01');
   if(oldBeforeError){alert('Old Financial Year cloud cleanup failed: '+oldBeforeError.message);return}
-  const {error:oldAfterError}=await sb.from('invoices').delete().eq('user_id',currentUser.id).gte('invoice_date','2027-04-01');
-  if(oldAfterError){alert('Old Financial Year cloud cleanup failed: '+oldAfterError.message);return}
   localStorage.setItem(cleanupKey,'1');
  }
  const {data,error}=await sb.from('invoices').select('*').eq('user_id',currentUser.id).order('invoice_date',{ascending:false});
  if(error){alert('Could not load cloud invoices: '+error.message);return}
  const local=JSON.parse(localStorage.getItem('billing_bills')||'[]');
  const map=new Map();[...(data||[]).map(r=>({...r.invoice_data,id:r.id})),...local].forEach(b=>map.set(b.id,b));
- bills=[...map.values()];localStorage.setItem('billing_bills',JSON.stringify(bills));initFY();render()
+ bills=[...map.values()];localStorage.setItem('billing_bills',JSON.stringify(bills));const knownYears=createdFinancialYears();bills.forEach(b=>{if(b.date&&b.date>='2026-04-01'){const year=fy(b.date);if(!knownYears.includes(year))knownYears.push(year)}});saveCreatedFinancialYears(knownYears);initFY();render()
 }
 function setAuthMessage(message,type=''){const el=$('authMessage');el.textContent=message;el.className='login-message '+type}
 function setLoginBusy(busy){loginBusy=busy;$('loginButton').disabled=busy;$('loginSpinner').classList.toggle('hidden',!busy);$('loginButtonText').textContent=busy?'Verifying securely…':'Sign in securely'}
