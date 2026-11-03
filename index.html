@@ -486,7 +486,7 @@ body.auth-dark .login-title,body.auth-dark .login-heading h1{color:#e2f7ec}
       <div class="login-field"><label for="authEmail">Username</label><div class="login-input-wrap"><span class="input-icon">♙</span><input id="authEmail" type="text" autocomplete="username" placeholder="Enter username" autocapitalize="none" spellcheck="false" required></div></div>
       <div class="login-field"><label for="authPassword">Password</label><div class="login-input-wrap"><span class="input-icon">▣</span><input id="authPassword" type="password" autocomplete="current-password" placeholder="Enter password" required><button class="eye-toggle" type="button" onclick="togglePassword()" aria-label="Show or hide password">Show</button></div></div>
       <div class="login-options"><label class="remember-option"><input id="rememberMe" type="checkbox"><span class="checkmark"></span><span>Remember me</span></label><button type="button" class="forgot-link" onclick="resetPassword()">Forgot password?</button></div>
-      <button id="loginButton" class="login-submit" type="submit"><span id="loginSpinner" class="login-spinner hidden"></span><span id="loginButtonText">Sign in securely</span><span class="submit-arrow">→</span></button>
+      <button id="loginButton" class="login-submit" type="button" onclick="signIn()"><span id="loginSpinner" class="login-spinner hidden"></span><span id="loginButtonText">Sign in securely</span><span class="submit-arrow">→</span></button>
       <p id="authMessage" class="login-message" role="status" aria-live="polite"></p>
     </form>
     <section id="passwordResetPanel" class="recovery-panel hidden">
