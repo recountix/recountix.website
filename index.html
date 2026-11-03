@@ -480,21 +480,21 @@ body.auth-dark .login-title,body.auth-dark .login-heading h1{color:#e2f7ec}
 <header id="appHeader"><button id="menuToggle" type="button" onclick="toggleSidebar()" aria-label="Open navigation">☰</button><div><div class="top-shop-identity"><div id="topShopLogo" class="top-shop-logo"><span>KC</span></div><div class="top-shop-name"><b id="brand">Computer Shop Billing CRM</b><small>Shop Billing & Management</small></div></div><div class="note" style="color:#d7deee">Non-GST Estimate / Cash Memo · No stock or cash drawer</div></div></header>
 <section id="authPanel" class="login-shell">
   <div class="login-card">
-    <div class="login-top"><div class="login-brand"><div class="login-mark" aria-label="Computer logo"><svg viewBox="0 0 48 48" role="img" aria-hidden="true"><rect x="5" y="7" width="38" height="27" rx="5" fill="none" stroke="currentColor" stroke-width="3"/><path d="M24 34v6M15 41h18M10 27h28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="36" cy="13" r="2" fill="#fff"/></svg></div><div><div class="login-title">Krishna Computer</div><div class="login-subtitle">SECURE ADMIN PORTAL</div></div></div><button type="button" class="theme-toggle" data-auth-action="theme" aria-label="Toggle dark mode">◐</button></div>
+    <div class="login-top"><div class="login-brand"><div class="login-mark" aria-label="Computer logo"><svg viewBox="0 0 48 48" role="img" aria-hidden="true"><rect x="5" y="7" width="38" height="27" rx="5" fill="none" stroke="currentColor" stroke-width="3"/><path d="M24 34v6M15 41h18M10 27h28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="36" cy="13" r="2" fill="#fff"/></svg></div><div><div class="login-title">Krishna Computer</div><div class="login-subtitle">SECURE ADMIN PORTAL</div></div></div><button type="button" class="theme-toggle" onclick="toggleLoginTheme()" aria-label="Toggle dark mode">◐</button></div>
     <div class="login-heading"><h1>Welcome back</h1><p>Sign in to continue to your billing dashboard.</p></div>
-    <form id="loginForm">
+    <form id="loginForm" onsubmit="event.preventDefault();signIn()">
       <div class="login-field"><label for="authEmail">Username</label><div class="login-input-wrap"><span class="input-icon">♙</span><input id="authEmail" type="text" autocomplete="username" placeholder="Enter username" autocapitalize="none" spellcheck="false" required></div></div>
-      <div class="login-field"><label for="authPassword">Password</label><div class="login-input-wrap"><span class="input-icon">▣</span><input id="authPassword" type="password" autocomplete="current-password" placeholder="Enter password" required><button class="eye-toggle" type="button" data-auth-action="password" aria-label="Show or hide password">Show</button></div></div>
-      <div class="login-options"><label class="remember-option"><input id="rememberMe" type="checkbox"><span class="checkmark"></span><span>Remember me</span></label><button type="button" class="forgot-link" data-auth-action="forgot">Forgot password?</button></div>
-      <button id="loginButton" class="login-submit" type="button" data-auth-action="signin"><span id="loginSpinner" class="login-spinner hidden"></span><span id="loginButtonText">Sign in securely</span><span class="submit-arrow">→</span></button>
+      <div class="login-field"><label for="authPassword">Password</label><div class="login-input-wrap"><span class="input-icon">▣</span><input id="authPassword" type="password" autocomplete="current-password" placeholder="Enter password" required><button class="eye-toggle" type="button" onclick="togglePassword()" aria-label="Show or hide password">Show</button></div></div>
+      <div class="login-options"><label class="remember-option"><input id="rememberMe" type="checkbox"><span class="checkmark"></span><span>Remember me</span></label><button type="button" class="forgot-link" onclick="resetPassword()">Forgot password?</button></div>
+      <button id="loginButton" class="login-submit" type="button" onclick="signIn()"><span id="loginSpinner" class="login-spinner hidden"></span><span id="loginButtonText">Sign in securely</span><span class="submit-arrow">→</span></button>
       <p id="authMessage" class="login-message" role="status" aria-live="polite"></p>
     </form>
     <section id="passwordResetPanel" class="recovery-panel hidden">
       <h2>Set a new password</h2><p>Choose a strong password for your Admin account.</p>
       <div class="login-field"><label for="newPassword">New password</label><div class="login-input-wrap"><input id="newPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div></div>
       <div class="login-field"><label for="confirmNewPassword">Confirm new password</label><div class="login-input-wrap"><input id="confirmNewPassword" type="password" autocomplete="new-password" placeholder="Re-enter new password"></div></div>
-      <button type="button" class="login-submit" data-auth-action="update-password">Update password</button>
-      <button type="button" class="recovery-back" data-auth-action="cancel-reset">Back to login</button>
+      <button type="button" class="login-submit" onclick="updatePassword()">Update password</button>
+      <button type="button" class="recovery-back" onclick="cancelPasswordReset()">Back to login</button>
       <p id="recoveryMessage" class="login-message" role="status"></p>
     </section>
     <div class="login-foot"><span class="secure-dot"></span> Protected by Supabase Authentication <span class="login-version">SECURE SESSION</span></div>
@@ -534,19 +534,7 @@ body.auth-dark .login-title,body.auth-dark .login-heading h1{color:#e2f7ec}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const SUPABASE_URL="https://qrokclcrbumnggoykucl.supabase.co",SUPABASE_KEY="sb_publishable_cpQRe6sg6HI4Oz_FSEo4sw_rKDUGx_k";
-// Register auth UI handlers before initializing Supabase so the controls remain responsive even if its CDN fails.
-document.getElementById('loginForm').addEventListener('submit',event=>{event.preventDefault();signIn()});
-document.querySelectorAll('[data-auth-action]').forEach(button=>button.addEventListener('click',event=>{
- event.preventDefault();
- switch(button.dataset.authAction){
-  case 'theme':toggleLoginTheme();break;
-  case 'password':togglePassword();break;
-  case 'forgot':resetPassword();break;
-  case 'signin':signIn();break;
-  case 'update-password':updatePassword();break;
-  case 'cancel-reset':cancelPasswordReset();break;
- }
-}));
+// Retain original inline login handlers used by the previously working design.
 let rememberChoice=localStorage.getItem('crm_remember')==='1';
 const authStorage={
  getItem:async key=>localStorage.getItem(key)??sessionStorage.getItem(key),
