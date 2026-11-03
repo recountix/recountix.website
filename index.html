@@ -119,6 +119,10 @@ body:not(.auth-page){background:var(--dash-bg);color:var(--dash-ink);font-family
 #appShell .tabs button.secondary{background:transparent;border-color:transparent;color:#587568;box-shadow:none}
 #appShell .tabs button.secondary:hover{background:#f0f8f3;border-color:#e3f0e7;transform:translateX(2px)}
 #appShell .actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+#appShell .actions button{min-height:42px;padding:11px 17px;border-radius:12px;font-size:12px;font-weight:800;white-space:normal;box-shadow:0 3px 8px rgba(16,119,79,.12)}
+#appShell .actions button.secondary{background:linear-gradient(180deg,#fff,#f4f8f5);border:1px solid #dce8df;color:#385b49;box-shadow:0 1px 3px rgba(27,68,46,.045)}
+#appShell .actions button.secondary:hover{background:#edf7f0;border-color:#bcdcc8;color:#176b49}
+@media(max-width:600px){#appShell .actions{gap:8px}#appShell .actions button{flex:1 1 145px;min-height:44px;padding:10px 12px}}
 #appShell input,#appShell textarea,#appShell select{min-height:40px;border-radius:10px;background:#fcfefc;border-color:#dce9e1;transition:border-color .16s,box-shadow .16s,background .16s}
 #appShell input:hover,#appShell textarea:hover,#appShell select:hover{border-color:#b9d9c6}
 #appShell input:focus,#appShell textarea:focus,#appShell select:focus{background:#fff;border-color:#31aa79;box-shadow:0 0 0 3px rgba(39,169,115,.12)}
