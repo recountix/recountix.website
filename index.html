@@ -344,6 +344,118 @@ body{position:relative;isolation:isolate;background:#eef7f3}
  #appShell button:not(.secondary):not(.danger):not(.nav-link),.login-submit{animation:none!important}
 }
 
+
+/* ===== Glass UI redesign — visual layer only; existing behavior preserved ===== */
+:root{
+ --glass-ink:#152d3e;--glass-muted:#647c8b;--glass-line:rgba(255,255,255,.68);
+ --glass-surface:rgba(255,255,255,.66);--glass-surface-strong:rgba(255,255,255,.82);
+ --glass-aqua:#37bfa7;--glass-blue:#5688ee;--glass-shadow:0 18px 48px rgba(42,82,119,.11);
+ --glass-radius:22px;
+}
+body:not(.auth-page){
+ color:var(--glass-ink)!important;
+ background:
+  radial-gradient(ellipse at 10% 5%,rgba(99,207,223,.25),transparent 34%),
+  radial-gradient(ellipse at 92% 12%,rgba(143,160,255,.2),transparent 32%),
+  radial-gradient(ellipse at 68% 92%,rgba(100,224,192,.18),transparent 35%),
+  linear-gradient(135deg,#edf6fb 0%,#f5f8ff 48%,#eaf7f5 100%)!important;
+ background-attachment:fixed!important;
+}
+#bubbleBackground{pointer-events:none;overflow:hidden}
+body:not(.auth-page) #bubbleBackground{position:fixed;inset:0;z-index:0;display:block;opacity:.48}
+#bubbleBackground span{background:linear-gradient(145deg,rgba(255,255,255,.6),rgba(107,196,229,.12));border:1px solid rgba(255,255,255,.58);box-shadow:inset 0 2px 12px rgba(255,255,255,.6),0 8px 30px rgba(74,145,186,.08);backdrop-filter:blur(2px)}
+#appHeader{height:76px!important;padding:0 28px!important;position:sticky;z-index:110!important;background:rgba(20,47,69,.82)!important;border-bottom:1px solid rgba(255,255,255,.2);backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%);box-shadow:0 10px 32px rgba(24,55,83,.13)!important}
+#appHeader .top-shop-logo{background:rgba(255,255,255,.84)!important;border:1px solid rgba(255,255,255,.7)!important;border-radius:15px!important;box-shadow:0 6px 18px rgba(0,0,0,.12)!important}
+#appHeader .top-shop-name b{letter-spacing:-.45px!important;font-size:16px!important}
+#appHeader .top-shop-name small{color:#bce9ed!important;letter-spacing:.45px}
+#appHeader .note{color:#d5e9f2!important}
+#appHeader button{border:1px solid rgba(255,255,255,.24)!important;background:rgba(255,255,255,.12)!important;box-shadow:inset 0 1px rgba(255,255,255,.14)!important;backdrop-filter:blur(12px);border-radius:13px!important}
+#appHeader button:hover{background:rgba(255,255,255,.22)!important}
+#appShell{position:relative;z-index:1}
+#appShell main{padding:30px 34px 56px 306px!important}
+#appShell .tabs{
+ top:76px!important;width:264px!important;padding:22px 16px!important;
+ background:rgba(255,255,255,.54)!important;border-right:1px solid rgba(255,255,255,.72)!important;
+ box-shadow:8px 0 36px rgba(57,103,137,.07)!important;
+ backdrop-filter:blur(28px) saturate(155%)!important;-webkit-backdrop-filter:blur(28px) saturate(155%)!important;
+}
+#appShell .sidebar-brand{padding:10px 12px 20px!important;margin-bottom:9px!important;border-bottom:1px solid rgba(124,165,191,.18)!important}
+#appShell .sidebar-brand-mark{border-radius:15px!important;background:linear-gradient(145deg,#70dfd1,#7aa7ff)!important;color:#163c53!important;box-shadow:0 7px 18px rgba(85,163,199,.2)!important}
+#appShell .sidebar-brand strong{color:#25465c!important;font-size:14px!important}
+#appShell .sidebar-brand small{color:#7b929f!important}
+#appShell .sidebar-caption{color:#8aa0ad!important;letter-spacing:1.7px!important}
+#appShell .tabs button.nav-link{position:relative!important;min-height:48px!important;border:1px solid transparent!important;border-radius:15px!important;background:transparent!important;color:#607a8b!important;box-shadow:none!important;transition:background .2s,border-color .2s,transform .2s!important}
+#appShell .tabs button.nav-link .nav-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.65);color:#7193a6;transition:all .2s}
+#appShell .tabs button.nav-link .nav-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#appShell .tabs button.nav-link .nav-label{font-weight:700}
+#appShell .tabs button.nav-link .nav-arrow{opacity:.4}
+#appShell .tabs button.nav-link.active,#appShell .tabs button.nav-link:not(.secondary){background:linear-gradient(110deg,rgba(99,211,195,.22),rgba(125,160,255,.18))!important;border-color:rgba(255,255,255,.8)!important;color:#24677b!important;box-shadow:inset 0 1px rgba(255,255,255,.8),0 8px 20px rgba(72,140,177,.08)!important}
+#appShell .tabs button.nav-link.active .nav-icon,#appShell .tabs button.nav-link:not(.secondary) .nav-icon{background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(222,244,248,.72));color:#3a9f9d;border-color:rgba(255,255,255,.9)}
+#appShell .tabs button.nav-link:hover{background:rgba(255,255,255,.52)!important;border-color:rgba(255,255,255,.7)!important;transform:translateX(2px)!important}
+#appShell .sidebar-footer{border-top:1px solid rgba(124,165,191,.18)!important;color:#7b929f!important}
+#appShell .sidebar-status-dot{box-shadow:0 0 0 4px rgba(65,201,159,.13)!important}
+#appShell .panel{
+ background:rgba(255,255,255,.64)!important;border:1px solid rgba(255,255,255,.82)!important;
+ border-radius:var(--glass-radius)!important;padding:25px!important;
+ box-shadow:0 16px 42px rgba(53,97,133,.085),inset 0 1px rgba(255,255,255,.85)!important;
+ backdrop-filter:blur(24px) saturate(150%)!important;-webkit-backdrop-filter:blur(24px) saturate(150%)!important;
+ transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease!important;
+}
+#appShell .panel:hover{border-color:rgba(255,255,255,.98)!important;box-shadow:0 20px 48px rgba(53,97,133,.11),inset 0 1px rgba(255,255,255,.9)!important}
+#appShell .panel h3{font-size:17px!important;font-weight:800!important;letter-spacing:-.45px!important;color:#23475e!important;border-bottom:1px solid rgba(127,168,194,.19)!important;padding-bottom:15px!important;margin-bottom:20px!important}
+#appShell .field label{font-size:11px!important;font-weight:750!important;letter-spacing:.35px!important;color:#6c8798!important}
+#appShell input,#appShell textarea,#appShell select{
+ background:rgba(255,255,255,.72)!important;border:1px solid rgba(168,197,215,.46)!important;
+ border-radius:13px!important;color:#1e3b4f!important;padding:12px 13px!important;
+ box-shadow:inset 0 1px 3px rgba(57,102,133,.035)!important;
+ transition:border-color .2s,box-shadow .2s,background .2s!important;
+}
+#appShell input:focus,#appShell textarea:focus,#appShell select:focus{background:rgba(255,255,255,.94)!important;border-color:rgba(74,174,192,.72)!important;box-shadow:0 0 0 4px rgba(83,192,197,.13),inset 0 1px 3px rgba(57,102,133,.035)!important}
+#appShell input[readonly]{background:rgba(235,246,250,.72)!important;color:#58788a!important}
+#appShell button{
+ overflow:hidden;isolation:isolate;position:relative;min-height:40px!important;padding:10px 16px!important;
+ border:1px solid rgba(255,255,255,.45)!important;border-radius:13px!important;
+ background:linear-gradient(135deg,#5ccfc0 0%,#4f9ce9 100%)!important;color:#fff!important;
+ font-size:12px!important;font-weight:800!important;letter-spacing:.18px!important;
+ box-shadow:0 7px 16px rgba(65,151,183,.19),inset 0 1px rgba(255,255,255,.36)!important;
+ transition:transform .18s ease,filter .18s ease,box-shadow .18s ease!important;
+}
+#appShell button:before{content:"";position:absolute;z-index:-1;width:24px;height:24px;left:12%;top:50%;border-radius:50%;background:rgba(255,255,255,.2);filter:blur(1px);transform:translateY(-50%);opacity:.55;transition:all .35s ease}
+#appShell button:hover{filter:brightness(1.045) saturate(1.06)!important;transform:translateY(-2px)!important;box-shadow:0 11px 22px rgba(65,151,183,.23),inset 0 1px rgba(255,255,255,.4)!important}
+#appShell button:hover:before{width:75px;height:75px;left:65%;opacity:.3}
+#appShell button:active{transform:translateY(0)!important;box-shadow:0 3px 9px rgba(65,151,183,.15)!important}
+#appShell button.secondary{background:rgba(255,255,255,.64)!important;color:#46758c!important;border:1px solid rgba(255,255,255,.9)!important;box-shadow:0 5px 14px rgba(74,120,150,.08),inset 0 1px rgba(255,255,255,.9)!important}
+#appShell button.secondary:hover{background:rgba(255,255,255,.88)!important;color:#286d88!important}
+#appShell button.danger{background:linear-gradient(135deg,#fff0f0,#ffe3e5)!important;color:#b64b5b!important;border:1px solid rgba(255,255,255,.88)!important;box-shadow:0 5px 14px rgba(182,75,91,.08)!important}
+#appShell .actions{gap:11px!important;margin-top:18px!important}
+#appShell .scroll{border:1px solid rgba(255,255,255,.86)!important;border-radius:16px!important;background:rgba(255,255,255,.35)!important}
+#appShell table{border-collapse:separate!important;border-spacing:0!important;min-width:720px}
+#appShell th{background:rgba(220,241,247,.68)!important;color:#587a8e!important;border-bottom:1px solid rgba(160,197,213,.32)!important;font-size:10px!important;letter-spacing:.7px!important;padding:14px 12px!important}
+#appShell td{background:rgba(255,255,255,.27);border-bottom:1px solid rgba(155,190,207,.18)!important;color:#426276!important;padding:12px!important;font-size:12px!important}
+#appShell tbody tr:hover td{background:rgba(255,255,255,.62)!important}
+#appShell .total{background:linear-gradient(125deg,rgba(217,248,241,.7),rgba(225,237,255,.7))!important;border:1px solid rgba(255,255,255,.88)!important;border-radius:17px!important;color:#2e7183!important;padding:17px 19px!important;box-shadow:inset 0 1px rgba(255,255,255,.9)!important}
+#appShell .total strong{color:#215d79!important}
+#appShell .note{color:#8299a7!important}
+#appShell .hidden{display:none!important}
+#appShell .grid{gap:15px!important}
+#appShell #createFYButton{margin-top:8px}
+body.sidebar-open #appShell .tabs{display:flex}
+@media(max-width:760px){
+ #appHeader{height:66px!important;padding:0 13px!important}
+ #appHeader #brand{font-size:13px!important}
+ #appHeader .top-shop-logo{width:38px!important;height:38px!important;flex-basis:38px!important;border-radius:12px!important}
+ #appHeader .top-shop-name b{max-width:42vw!important;font-size:13px!important}
+ #appHeader .top-shop-name small{display:none}
+ #appShell main{padding:18px 13px 34px!important}
+ #appShell .tabs{top:74px!important;left:10px!important;width:min(282px,calc(100vw - 20px))!important;bottom:auto!important;max-height:calc(100vh - 90px);overflow:auto!important;padding:14px!important;border:1px solid rgba(255,255,255,.85)!important;border-radius:20px!important;background:rgba(240,250,255,.83)!important;box-shadow:0 24px 55px rgba(40,86,120,.22)!important;backdrop-filter:blur(30px)!important}
+ #appShell .panel{padding:17px 14px!important;border-radius:19px!important;margin-bottom:15px!important}
+ #appShell .panel h3{font-size:15px!important}
+ #appShell .grid{gap:11px!important}
+ #appShell button{min-height:39px!important;padding:10px 13px!important}
+}
+@media(min-width:761px){#appShell main{min-height:calc(100vh - 76px)}}
+@media(prefers-reduced-motion:reduce){#appShell button,#appShell .panel,#appShell .tabs button.nav-link{transition:none!important}#appShell button:before{display:none!important}}
+
 </style></head><body class="auth-page"><div id="bubbleBackground" aria-hidden="true"><span style="--x:4%;--size:42px;--duration:19s;--delay:-3s;--drift:28px"></span><span style="--x:16%;--size:19px;--duration:15s;--delay:-11s;--drift:-24px"></span><span style="--x:29%;--size:66px;--duration:24s;--delay:-8s;--drift:35px"></span><span style="--x:43%;--size:28px;--duration:17s;--delay:-5s;--drift:-18px"></span><span style="--x:57%;--size:52px;--duration:22s;--delay:-14s;--drift:22px"></span><span style="--x:70%;--size:24px;--duration:16s;--delay:-2s;--drift:-30px"></span><span style="--x:82%;--size:74px;--duration:26s;--delay:-17s;--drift:26px"></span><span style="--x:94%;--size:34px;--duration:18s;--delay:-9s;--drift:-20px"></span></div>
 <header id="appHeader"><button id="menuToggle" type="button" onclick="toggleSidebar()" aria-label="Open navigation">☰</button><div><div class="top-shop-identity"><div id="topShopLogo" class="top-shop-logo"><span>KC</span></div><div class="top-shop-name"><b id="brand">Computer Shop Billing CRM</b><small>Shop Billing & Management</small></div></div><div class="note" style="color:#d7deee">Non-GST Estimate / Cash Memo · No stock or cash drawer</div></div></header>
 <section id="authPanel" class="login-shell">
