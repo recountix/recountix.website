@@ -534,6 +534,19 @@ body.auth-dark .login-title,body.auth-dark .login-heading h1{color:#e2f7ec}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const SUPABASE_URL="https://qrokclcrbumnggoykucl.supabase.co",SUPABASE_KEY="sb_publishable_cpQRe6sg6HI4Oz_FSEo4sw_rKDUGx_k";
+// Register auth UI handlers before initializing Supabase so the controls remain responsive even if its CDN fails.
+document.getElementById('loginForm').addEventListener('submit',event=>{event.preventDefault();signIn()});
+document.querySelectorAll('[data-auth-action]').forEach(button=>button.addEventListener('click',event=>{
+ event.preventDefault();
+ switch(button.dataset.authAction){
+  case 'theme':toggleLoginTheme();break;
+  case 'password':togglePassword();break;
+  case 'forgot':resetPassword();break;
+  case 'signin':signIn();break;
+  case 'update-password':updatePassword();break;
+  case 'cancel-reset':cancelPasswordReset();break;
+ }
+}));
 let rememberChoice=localStorage.getItem('crm_remember')==='1';
 const authStorage={
  getItem:async key=>localStorage.getItem(key)??sessionStorage.getItem(key),
@@ -934,18 +947,6 @@ function updateShopHeader(){const name=cfg.shop||'Computer Shop Billing CRM';$('
 function saveSettings(){if(!hasPermission('manage_shop_settings')){alert('You do not have permission to change shop settings.');return}['shop','shopPhone','shopAddress','shopEmail','prefix','defaultTerms'].forEach(k=>cfg[k]=$(k).value.trim());if($('settingsFY'))setActiveFY($('settingsFY').value);delete cfg.shopGstin;localStorage.setItem('billing_settings',JSON.stringify(cfg));updateShopHeader();if(!edit)$('terms').value=cfg.defaultTerms;alert('Shop profile saved.')}
 function backup(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({bills,settings:cfg},null,2)],{type:'application/json'}));a.download='billing-backup.json';a.click();URL.revokeObjectURL(a.href)}
 function restore(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.bills))throw Error('Invalid backup');if(confirm('Replace existing bills with backup?')){bills=d.bills;cfg=d.settings||cfg;saveData();localStorage.setItem('billing_settings',JSON.stringify(cfg));initFY();render();alert('Imported')}}catch(x){alert(x.message)}};r.readAsText(f);e.target.value=''}
-// Bind authentication controls through native listeners instead of inline onclick attributes.
-document.getElementById('loginForm').addEventListener('submit',event=>{event.preventDefault();signIn()});
-document.querySelectorAll('[data-auth-action]').forEach(button=>button.addEventListener('click',event=>{
- event.preventDefault();
- switch(button.dataset.authAction){
-  case 'theme':toggleLoginTheme();break;
-  case 'password':togglePassword();break;
-  case 'forgot':resetPassword();break;
-  case 'signin':signIn();break;
-  case 'update-password':updatePassword();break;
-  case 'cancel-reset':cancelPasswordReset();break;
- }
-}));
+// Authentication UI listeners are registered before Supabase initialization.
 updateShopHeader();$('date').value=today();$('terms').value=cfg.defaultTerms;initFY();$('appShell').classList.add('hidden');if(localStorage.getItem('crm_login_theme')==='dark')document.body.classList.add('auth-dark');$('rememberMe').checked=rememberChoice;showLogin();if(passwordRecoveryMode)showPasswordRecovery();sb.auth.getSession().then(({data})=>{if(data.session?.user&&!passwordRecoveryMode)authReady(data.session.user)});
 </script></body></html>
