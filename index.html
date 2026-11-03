@@ -652,7 +652,8 @@ sb.auth.onAuthStateChange((event,session)=>{
  else if(event==='SIGNED_OUT'){currentUser=null;authReadyUserId=null;showLogin()}
 });
 setInterval(checkAccountStatus,60000);
-function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}\n function formatDateDMY(value){if(!value)return '—';const p=String(value).split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:value}
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+ function formatDateDMY(value){if(!value)return '—';const p=String(value).split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:value}
 function fy(d){let x=new Date(d+'T12:00:00'),y=x.getFullYear();return x.getMonth()>=3?y+'-'+String(y+1).slice(-2):(y-1)+'-'+String(y).slice(-2)}
 const INITIAL_FY='2026-27';
 function createdFinancialYears(){let saved=[];try{saved=JSON.parse(localStorage.getItem('billing_created_fys')||'[]')}catch(_){}const cleanupKey='billing_fy_dropdown_cleanup_26_27_v1';if(localStorage.getItem(cleanupKey)!=='1'){saved=[INITIAL_FY];localStorage.setItem(cleanupKey,'1')}if(!Array.isArray(saved))saved=[];const valid=saved.filter(x=>typeof x==='string'&&x.length===7&&x[4]==='-'&&Number.isInteger(Number(x.slice(0,4)))&&Number.isInteger(Number(x.slice(5))));if(!valid.includes(INITIAL_FY))valid.push(INITIAL_FY);const years=[...new Set(valid)].sort((a,b)=>Number(b.slice(0,4))-Number(a.slice(0,4)));localStorage.setItem('billing_created_fys',JSON.stringify(years));return years}
