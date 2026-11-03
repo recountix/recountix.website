@@ -773,7 +773,7 @@ async function makeInvoicePdfBlob(b){
  const ensure=(height)=>{if(y+height>bottom){newPage();return true}return false};
  const drawItemHeader=()=>{
   const widths=[10,49,34,28,23,12,30],headers=['Sr.','Description','Serial No.','Warranty','Rate (Rs.)','Qty','Amount (Rs.)'];
-  let x=left;const y0=y;doc.setFont('helvetica','bold');doc.setFontSize(7);fill(left,y0,width,[8],[25,77,130]);
+  let x=left;const y0=y;doc.setFont('helvetica','bold');doc.setFontSize(7);fill(left,y0,width,8,[25,77,130]);
   widths.forEach((w,i)=>{box(x,y0,w,8,[140,157,178],[25,77,130]);doc.setTextColor(255,255,255);const align=i>=4?'right':'left';const tx=align==='right'?x+w-1.5:x+1.5;doc.text(headers[i],tx,y0+5.2,{align});x+=w});
   y+=8;return widths;
  };
