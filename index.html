@@ -802,20 +802,22 @@ async function makeInvoicePdfBlob(b){
  pageHeader();
  // Invoice and customer fields, arranged in two balanced columns.
  const metaY=y,split=left+104;
- line(split,metaY,split,metaY+30,blue,.7);
- doc.setFont('helvetica','bold');doc.setTextColor(...blue);text('BILL TO:',left+1,metaY+5,9);
- doc.setTextColor(...ink);doc.setFont('helvetica','bold');text(b.cust||'Customer',left+24,metaY+5,8.5);
- line(left+1,metaY+11,left+101,metaY+11);
- text(b.address||'',left+1,metaY+17,7.2);
- line(left+1,metaY+21,left+101,metaY+21);
- text('Mobile: '+(b.phone||'-'),left+1,metaY+27,7.2);
- doc.setFont('helvetica','bold');text('Invoice No.:',split+7,metaY+8,8);
- doc.setFont('helvetica','normal');text(b.no||'-',split+39,metaY+8,8);
- line(split+7,metaY+12,right-2,metaY+12);
- doc.setFont('helvetica','bold');text('Invoice Date:',split+7,metaY+21,8);
- doc.setFont('helvetica','normal');text(formatDateDMY(b.date)||'-',split+39,metaY+21,8);
- line(split+7,metaY+25,right-2,metaY+25);
- y+=35;
+ // Compact customer/invoice information: tighter vertical rhythm, no oversized gaps.
+ line(split,metaY,split,metaY+23,blue,.7);
+ doc.setFont('helvetica','bold');doc.setTextColor(...blue);text('BILL TO:',left+1,metaY+4,8.5);
+ doc.setTextColor(...ink);doc.setFont('helvetica','bold');text(b.cust||'Customer',left+24,metaY+4,8.2);
+ line(left+1,metaY+8,left+101,metaY+8);
+ doc.setFont('helvetica','normal');text(b.address||'',left+1,metaY+14,7);
+ line(left+1,metaY+17,left+101,metaY+17);
+ doc.setFont('helvetica','bold');text('Mobile:',left+1,metaY+22,7.2);
+ doc.setFont('helvetica','normal');text(b.phone||'-',left+19,metaY+22,7.2);
+ doc.setFont('helvetica','bold');text('Invoice No.:',split+7,metaY+6,7.8);
+ doc.setFont('helvetica','normal');text(b.no||'-',split+39,metaY+6,7.8);
+ line(split+7,metaY+9,right-2,metaY+9);
+ doc.setFont('helvetica','bold');text('Invoice Date:',split+7,metaY+17,7.8);
+ doc.setFont('helvetica','normal');text(formatDateDMY(b.date)||'-',split+39,metaY+17,7.8);
+ line(split+7,metaY+20,right-2,metaY+20);
+ y+=27;
  // Simplified five-column item grid. Serial/IMEI details stay beneath product description.
  const cols=[12,78,25,30,41],headers=['Sr. No.','Description of Goods','Quantity','Rate (Rs.)','Amount (Rs.)'];
  function drawTableHeader(){
