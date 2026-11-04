@@ -800,19 +800,39 @@ async function makeInvoicePdfBlob(b){
  function pageHeader(){y=9;drawHeader();doc.setTextColor(...ink)}
  function ensure(h){if(y+h>bottom){doc.addPage();pageHeader();return true}return false}
  pageHeader();
- // Invoice and customer fields, arranged in two balanced columns.
- const metaY=y,split=left+104;
- // Clean metadata without underlines/dividers; compact label-to-value spacing.
- doc.setFont('helvetica','bold');doc.setTextColor(...blue);text('BILL TO:',left+1,metaY+4,8.5);
- doc.setTextColor(...ink);doc.setFont('helvetica','bold');text(b.cust||'Customer',left+21,metaY+4,8.2);
- doc.setFont('helvetica','normal');text(b.address||'',left+1,metaY+12,7);
- doc.setFont('helvetica','bold');text('Mobile:',left+1,metaY+20,7.2);
- doc.setFont('helvetica','normal');text(b.phone||'-',left+16,metaY+20,7.2);
- doc.setFont('helvetica','bold');text('Invoice No.:',split+3,metaY+6,7.8);
- doc.setFont('helvetica','normal');text(b.no||'-',split+31,metaY+6,7.8);
- doc.setFont('helvetica','bold');text('Invoice Date:',split+3,metaY+17,7.8);
- doc.setFont('helvetica','normal');text(formatDateDMY(b.date)||'-',split+31,metaY+17,7.8);
- y+=25;
+ // Invoice/customer block: two fixed-width columns with wrapped values and aligned labels.
+ const metaY=y;
+ const customerLabelX=left+1,customerValueX=left+25,customerValueW=78;
+ const invoiceColX=left+105,invoiceLabelX=invoiceColX+2,invoiceValueX=invoiceColX+32,invoiceValueW=right-invoiceValueX-2;
+ doc.setFont('helvetica','bold');doc.setTextColor(...blue);doc.setFontSize(8.3);
+ text('Customer:',customerLabelX,metaY+5,8.3);
+ doc.setTextColor(...ink);doc.setFont('helvetica','bold');doc.setFontSize(8.2);
+ const customerLines=doc.splitTextToSize(safe(b.cust||'Customer'),customerValueW);
+ doc.text(customerLines,customerValueX,metaY+5,{lineHeightFactor:1.05});
+ const nameH=Math.max(6,customerLines.length*4.2);
+ doc.setFont('helvetica','bold');doc.setFontSize(7.4);text('Address:',customerLabelX,metaY+nameH+5,7.4);
+ doc.setFont('helvetica','normal');doc.setFontSize(7.2);
+ const addressLines=doc.splitTextToSize(safe(b.address||'-'),customerValueW);
+ doc.text(addressLines,customerValueX,metaY+nameH+5,{lineHeightFactor:1.05});
+ const addressH=Math.max(5.5,addressLines.length*3.8);
+ const mobileY=metaY+nameH+addressH+5;
+ doc.setFont('helvetica','bold');text('Mobile:',customerLabelX,mobileY,7.4);
+ doc.setFont('helvetica','normal');text(b.phone||'-',customerValueX,mobileY,7.4);
+ // Invoice number/date labels and values have separate columns; long values wrap within page.
+ doc.setFont('helvetica','bold');doc.setFontSize(7.8);doc.setTextColor(...ink);
+ text('Invoice No.:',invoiceLabelX,metaY+6,7.8);
+ doc.setFont('helvetica','normal');doc.setFontSize(8);
+ const invoiceNoLines=doc.splitTextToSize(safe(b.no||'-'),invoiceValueW);
+ doc.text(invoiceNoLines,invoiceValueX,metaY+6,{lineHeightFactor:1.05});
+ const invNoH=Math.max(6,invoiceNoLines.length*4.1);
+ doc.setFont('helvetica','bold');doc.setFontSize(7.8);
+ text('Invoice Date:',invoiceLabelX,metaY+invNoH+9,7.8);
+ doc.setFont('helvetica','normal');doc.setFontSize(8);
+ const invoiceDateLines=doc.splitTextToSize(safe(formatDateDMY(b.date)||'-'),invoiceValueW);
+ doc.text(invoiceDateLines,invoiceValueX,metaY+invNoH+9,{lineHeightFactor:1.05});
+ const invoiceBlockH=invNoH+Math.max(7,invoiceDateLines.length*4.1)+9;
+ const customerBlockH=nameH+addressH+10;
+ y+=Math.max(customerBlockH,invoiceBlockH,25)+3;
  // Simplified five-column item grid. Serial/IMEI details stay beneath product description.
  const cols=[12,78,25,30,41],headers=['Sr. No.','Description of Goods','Quantity','Rate (Rs.)','Amount (Rs.)'];
  function drawTableHeader(){
