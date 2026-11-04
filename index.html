@@ -778,24 +778,24 @@ async function makeInvoicePdfBlob(b){
   try{logoData=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{try{const cv=document.createElement('canvas'),iw=im.naturalWidth||im.width,ih=im.naturalHeight||im.height;if(!iw||!ih)throw new Error('Logo dimensions unavailable');const sc=Math.min(1,700/Math.max(iw,ih));cv.width=Math.max(1,Math.round(iw*sc));cv.height=Math.max(1,Math.round(ih*sc));const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);cx.drawImage(im,0,0,cv.width,cv.height);resolve(cv.toDataURL('image/jpeg',.9))}catch(e){reject(e)}};im.onerror=()=>reject(new Error('Logo could not load'));im.src=cfg.shopLogo}) ;logoType='JPEG'}catch(e){console.warn('Invoice logo could not be embedded:',e)}
  }
  function drawHeader(){
-  // Clean blue-and-white masthead, with contact details and logo kept separate.
-  fill(left,y,width,31,[248,252,255]);
-  fill(left,y,128,25,navy);
-  doc.setFillColor(...navy);doc.triangle(left+128,y,left+128,y+25,left+137,y+25,'F');
-  doc.setFillColor(255,255,255);doc.circle(right-22,y+15.5,15,'F');
-  doc.setDrawColor(...blue);doc.setLineWidth(1.5);doc.circle(right-22,y+15.5,16,'S');
-  if(logoData){try{doc.addImage(logoData,logoType,right-35,y+3,26,25)}catch(e){doc.setTextColor(...blue);doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text(initials,right-22,y+20,{align:'center'})}}
-  else{doc.setTextColor(...blue);doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text(initials,right-22,y+20,{align:'center'})}
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');
-  if(cfg.shopPhone)text('Phone: '+cfg.shopPhone,left+5,y+7,8);
-  if(cfg.shopEmail)text('Email: '+cfg.shopEmail,left+5,y+14,7.1);
+  // Minimal white masthead: no colored contact ribbon and no circular logo frame.
+  doc.setFillColor(255,255,255);doc.rect(left,y,width,36,'F');
+  doc.setTextColor(...navy);doc.setFont('helvetica','bold');doc.setFontSize(13.5);
+  const shopLines=doc.splitTextToSize(safe(brand),130);doc.text(shopLines.slice(0,1),left+1,y+7);
+  doc.setTextColor(...ink);doc.setFont('helvetica','normal');doc.setFontSize(7.2);
+  const contactParts=[];
+  if(cfg.shopPhone)contactParts.push('Phone: '+cfg.shopPhone);
+  if(cfg.shopEmail)contactParts.push('Email: '+cfg.shopEmail);
+  if(contactParts.length)doc.text(doc.splitTextToSize(safe(contactParts.join('   |   ')),130).slice(0,1),left+1,y+14);
   const addr=String(cfg.shopAddress||'');
-  if(addr){const addrLines=doc.splitTextToSize(safe(addr),115);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.text(addrLines.slice(0,1),left+5,y+21)}
-  doc.setTextColor(...navy);doc.setFont('helvetica','bold');doc.setFontSize(15);
-  const shopLines=doc.splitTextToSize(safe(brand),112);doc.text(shopLines.slice(0,1),left+1,y+39);
-  doc.setTextColor(...blue);doc.setFont('helvetica','bold');doc.setFontSize(7.5);
-  text('INVOICE / BILL',left+1,y+46,7.5);
-  y+=52;
+  if(addr)doc.text(doc.splitTextToSize(safe(addr),130).slice(0,1),left+1,y+21);
+  // Logo appears directly, without a circular badge, outline, or colored patch.
+  if(logoData){try{doc.addImage(logoData,logoType,right-39,y+1,37,25)}catch(e){doc.setTextColor(...blue);doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(initials,right-20,y+15,{align:'center'})}}
+  else{doc.setTextColor(...blue);doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(initials,right-20,y+15,{align:'center'})}
+  doc.setTextColor(...navy);doc.setFont('helvetica','bold');doc.setFontSize(21);
+  doc.text('INVOICE',left+1,y+34);
+  doc.setFillColor(...blue);doc.rect(left,y+24,2.5,10,'F');
+  y+=40;
  }
  function pageHeader(){y=9;drawHeader();doc.setTextColor(...ink)}
  function ensure(h){if(y+h>bottom){doc.addPage();pageHeader();return true}return false}
