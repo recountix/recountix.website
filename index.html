@@ -829,7 +829,7 @@ async function makeInvoicePdfBlob(b){
   const descLines=doc.splitTextToSize(safe(desc),cols[1]-5);
   const serialLines=serial?doc.splitTextToSize(safe(serial.replace(/[;,]\s*/g,', ')),cols[1]-8):[];
   const rowH=Math.max(15,descLines.length*4.1+serialLines.length*3.3+5);
-  ensure(rowH);
+  if(ensure(rowH))drawTableHeader();
   const bg=index%2===0?[255,255,255]:pale;fill(left,y,width,rowH,bg);
   let x=left;cols.forEach(cw=>{stroke(x,y,cw,rowH);x+=cw});
   doc.setTextColor(...ink);doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.text(String(index+1),left+cols[0]/2,y+rowH/2+1.5,{align:'center'});
