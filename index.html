@@ -628,7 +628,7 @@ async function authReady(user){
   const {data:permissionData,error:permissionError}=await sb.functions.invoke('user-management',{body:{action:'my-permissions'}});
   if(permissionError||!permissionData?.permissions)throw new Error('Could not load your account permissions. Please refresh or contact the administrator.');
   currentPermissions={...currentPermissions,...permissionData.permissions};applyPermissionVisibility();document.body.classList.remove('auth-page');$('appHeader').style.display='flex';$('authPanel').classList.add('hidden');$('appShell').classList.remove('hidden');
-  try{await loadCloud();fresh()}catch(error){alert('CRM opened, but cloud data could not load: '+error.message)}
+  try{await loadShopProfile();await loadCloud();fresh()}catch(error){alert('CRM opened, but cloud data could not load: '+error.message)}
  }catch(error){
   authReadyUserId=null;currentUser=null;document.body.classList.add('auth-page');$('appHeader').style.display='none';$('appShell').classList.add('hidden');$('authPanel').classList.remove('hidden');$('loginForm').classList.remove('hidden');$('passwordResetPanel').classList.add('hidden');setAuthMessage(error.message||'Could not verify your session. Please try again.','error');
  }
@@ -1000,11 +1000,28 @@ function syncFYFromDate(){
 }
 function loadSettings(){['shop','shopPhone','shopAddress','shopEmail','prefix','defaultTerms'].forEach(k=>$(k).value=cfg[k]||'');if($('settingsFY'))$('settingsFY').value=activeFY;renderShopLogo()}
 function renderShopLogo(){const p=$('shopLogoPreview');if(!p)return;p.innerHTML=cfg.shopLogo?'<img src="'+cfg.shopLogo+'" alt="Shop logo preview" style="width:76px;height:76px;object-fit:contain;border:1px solid #dcebe2;border-radius:12px;padding:5px;background:white"><span class="note">Current shop logo</span>':'<span class="note">No logo uploaded yet</span>'}
-function handleShopLogo(e){const f=e.target.files&&e.target.files[0];if(!f)return;if(!/^image\/(png|jpeg|webp)$/.test(f.type)){alert('Please choose a PNG, JPG or WEBP image.');e.target.value='';return}if(f.size>1500000){alert('Logo must be smaller than 1.5 MB.');e.target.value='';return}const reader=new FileReader();reader.onload=()=>{cfg.shopLogo=String(reader.result||'');persistShopSettings();renderShopLogo()};reader.readAsDataURL(f)}
-function removeShopLogo(){cfg.shopLogo='';$('shopLogoFile').value='';persistShopSettings();renderShopLogo()}
+async function syncShopProfile(){
+ if(!currentUser)return;
+ const profile={shop:cfg.shop||'Krishna Computer',shopPhone:cfg.shopPhone||'',shopAddress:cfg.shopAddress||'',shopEmail:cfg.shopEmail||'',shopLogo:cfg.shopLogo||'',prefix:cfg.prefix||'CM',defaultTerms:cfg.defaultTerms||''};
+ const {error}=await sb.from('shop_profiles').upsert({user_id:currentUser.id,profile,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+ if(error)throw error;
+}
+async function loadShopProfile(){
+ if(!currentUser)return;
+ const {data,error}=await sb.from('shop_profiles').select('profile').eq('user_id',currentUser.id).maybeSingle();
+ if(error)throw error;
+ // If no cloud profile exists yet, preserve this device's current profile; do not overwrite/seed cloud automatically.
+ if(data&&data.profile&&typeof data.profile==='object'){
+  cfg={...cfg,...data.profile};
+  localStorage.setItem('billing_settings',JSON.stringify(cfg));
+  loadSettings();updateShopHeader();
+ }
+}
+function handleShopLogo(e){const f=e.target.files&&e.target.files[0];if(!f)return;if(!/^image\/(png|jpeg|webp)$/.test(f.type)){alert('Please choose a PNG, JPG or WEBP image.');e.target.value='';return}if(f.size>1500000){alert('Logo must be smaller than 1.5 MB.');e.target.value='';return}const reader=new FileReader();reader.onload=async()=>{cfg.shopLogo=String(reader.result||'');persistShopSettings();renderShopLogo();try{await syncShopProfile()}catch(err){alert('Logo saved on this device, but cloud sync failed: '+err.message)}};reader.readAsDataURL(f)}
+async function removeShopLogo(){cfg.shopLogo='';$('shopLogoFile').value='';persistShopSettings();renderShopLogo();try{await syncShopProfile()}catch(err){alert('Logo removed on this device, but cloud sync failed: '+err.message)}}
 function updateShopHeader(){const name=cfg.shop||'Computer Shop Billing CRM';$('brand').textContent=name;const logo=$('topShopLogo');if(logo)logo.innerHTML=cfg.shopLogo?'<img src="'+cfg.shopLogo+'" alt="Shop logo">':'<span>'+(esc(name.trim().split(/\\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase())||'KC')+'</span>'}
 function persistShopSettings(){localStorage.setItem('billing_settings',JSON.stringify(cfg));updateShopHeader()}
-function saveSettings(){if(!hasPermission('manage_shop_settings')){alert('You do not have permission to change shop settings.');return}['shop','shopPhone','shopAddress','shopEmail','prefix','defaultTerms'].forEach(k=>cfg[k]=$(k).value.trim());if(!cfg.shop)cfg.shop='Krishna Computer';if($('settingsFY'))setActiveFY($('settingsFY').value);delete cfg.shopGstin;persistShopSettings();if(!edit)$('terms').value=cfg.defaultTerms;alert('Shop profile saved.')}
+async function saveSettings(){if(!hasPermission('manage_shop_settings')){alert('You do not have permission to change shop settings.');return}['shop','shopPhone','shopAddress','shopEmail','prefix','defaultTerms'].forEach(k=>cfg[k]=$(k).value.trim());if(!cfg.shop)cfg.shop='Krishna Computer';if($('settingsFY'))setActiveFY($('settingsFY').value);delete cfg.shopGstin;persistShopSettings();if(!edit)$('terms').value=cfg.defaultTerms;try{await syncShopProfile();alert('Shop profile saved and synced to your other devices.')}catch(error){alert('Shop profile saved on this device, but cloud sync failed: '+error.message)}}
 function backup(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({bills,settings:cfg},null,2)],{type:'application/json'}));a.download='billing-backup.json';a.click();URL.revokeObjectURL(a.href)}
 function restore(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.bills))throw Error('Invalid backup');if(confirm('Replace existing bills with backup?')){bills=d.bills;cfg=d.settings||cfg;saveData();localStorage.setItem('billing_settings',JSON.stringify(cfg));initFY();render();alert('Imported')}}catch(x){alert(x.message)}};r.readAsText(f);e.target.value=''}
 // Authentication UI listeners are registered before Supabase initialization.
