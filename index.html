@@ -778,22 +778,24 @@ async function makeInvoicePdfBlob(b){
   try{logoData=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{try{const cv=document.createElement('canvas'),iw=im.naturalWidth||im.width,ih=im.naturalHeight||im.height;if(!iw||!ih)throw new Error('Logo dimensions unavailable');const sc=Math.min(1,700/Math.max(iw,ih));cv.width=Math.max(1,Math.round(iw*sc));cv.height=Math.max(1,Math.round(ih*sc));const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);cx.drawImage(im,0,0,cv.width,cv.height);resolve(cv.toDataURL('image/jpeg',.9))}catch(e){reject(e)}};im.onerror=()=>reject(new Error('Logo could not load'));im.src=cfg.shopLogo}) ;logoType='JPEG'}catch(e){console.warn('Invoice logo could not be embedded:',e)}
  }
  function drawHeader(){
-  // Premium navy contact ribbon and a dedicated logo zone.
-  roundFill(left,y,width,29,2,navy);
+  // Clean blue-and-white masthead, with contact details and logo kept separate.
+  fill(left,y,width,31,[248,252,255]);
+  fill(left,y,128,25,navy);
+  doc.setFillColor(...navy);doc.triangle(left+128,y,left+128,y+25,left+137,y+25,'F');
+  doc.setFillColor(255,255,255);doc.circle(right-22,y+15.5,15,'F');
+  doc.setDrawColor(...blue);doc.setLineWidth(1.5);doc.circle(right-22,y+15.5,16,'S');
+  if(logoData){try{doc.addImage(logoData,logoType,right-35,y+3,26,25)}catch(e){doc.setTextColor(...blue);doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text(initials,right-22,y+20,{align:'center'})}}
+  else{doc.setTextColor(...blue);doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text(initials,right-22,y+20,{align:'center'})}
   doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');
-  text(cfg.shopPhone?'Phone: '+cfg.shopPhone:'',left+5,y+8,8);
-  text(cfg.shopEmail?'Email: '+cfg.shopEmail:'',left+5,y+15,7.2);
+  if(cfg.shopPhone)text('Phone: '+cfg.shopPhone,left+5,y+7,8);
+  if(cfg.shopEmail)text('Email: '+cfg.shopEmail,left+5,y+14,7.1);
   const addr=String(cfg.shopAddress||'');
-  const addrLines=doc.splitTextToSize(safe(addr),128);
-  doc.setFontSize(7.2);if(addrLines.length)doc.text(addrLines.slice(0,2),left+5,y+22,{lineHeightFactor:1.05});
-  // Logo is deliberately allocated its own area at the right of the banner.
-  doc.setFillColor(255,255,255);doc.circle(right-14.5,y+14.5,13,'F');
-  if(logoData){try{doc.addImage(logoData,logoType,right-26.5,y+2.5,24,24)}catch(e){doc.setTextColor(...blue);doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(initials,right-14.5,y+18,{align:'center'})}}
-  else{doc.setDrawColor(...blue);doc.setLineWidth(1);doc.circle(right-14.5,y+14.5,12,'S');doc.setTextColor(...blue);doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(initials,right-14.5,y+18,{align:'center'})}
-  y+=35;
-  doc.setTextColor(...navy);doc.setFont('helvetica','bold');doc.setFontSize(25);doc.text('INVOICE',left+1,y+3);
-  doc.setFillColor(...blue);doc.rect(left,y-2,3,13,'F');
-  y+=15;
+  if(addr){const addrLines=doc.splitTextToSize(safe(addr),115);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.text(addrLines.slice(0,1),left+5,y+21)}
+  doc.setTextColor(...navy);doc.setFont('helvetica','bold');doc.setFontSize(15);
+  const shopLines=doc.splitTextToSize(safe(brand),112);doc.text(shopLines.slice(0,1),left+1,y+39);
+  doc.setTextColor(...blue);doc.setFont('helvetica','bold');doc.setFontSize(7.5);
+  text('INVOICE / BILL',left+1,y+46,7.5);
+  y+=52;
  }
  function pageHeader(){y=9;drawHeader();doc.setTextColor(...ink)}
  function ensure(h){if(y+h>bottom){doc.addPage();pageHeader();return true}return false}
